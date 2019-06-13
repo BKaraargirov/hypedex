@@ -51,6 +51,27 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
     Files.delete(Paths.get(storageLocation))
   }
 
+  "File" should "be deleted properly" in {
+    val newMetadata = Metadata[Double](
+      id = "TestNodeRead",
+      distanceFunction = (x: Double, y: Double) => {x + y},
+      treeRoot = KDNode[Double](
+        dimensionName = "bla",
+        value = 5.0,
+        left = Option(KDNode[Double]("t1", 4.0, None, None)),
+        right = Option(KDNode[Double]("t1",3.0, None, None)),
+      )
+    )
+
+    val storageLocation: String = metadataStore.saveMetadata(newMetadata)
+
+    Files.exists(Paths.get(storageLocation)) should equal(true)
+
+    val isDeleted = metadataStore.deleteMetadataById(newMetadata.id)
+
+    Files.exists(Paths.get(storageLocation)) should equal(false)
+  }
+
   "File location with trailing /" should "be correct" in {
     val baseLocation ="/usr/local/temp/"
     val metadataName = "test"

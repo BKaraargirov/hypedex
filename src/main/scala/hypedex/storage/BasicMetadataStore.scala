@@ -1,6 +1,7 @@
 package hypedex.storage
 
 import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
+import java.nio.file.{Files, Paths}
 
 import hypedex.models.Metadata
 
@@ -19,7 +20,7 @@ class BasicMetadataStore[T <: Metadata[Any]](val storageLocation: String) extend
     * @return The storage location of the metadata file
     */
   // TODO: Use Either
-  def saveMetadata(newMetadata: T): String = {
+  override def saveMetadata(newMetadata: T): String = {
     val pathToFile = createPathToFile(newMetadata.id)
     val fileStream = new FileOutputStream(pathToFile)
     val objectStream = new ObjectOutputStream(fileStream)
@@ -34,12 +35,23 @@ class BasicMetadataStore[T <: Metadata[Any]](val storageLocation: String) extend
     * @param metadataId used to locate the file
     * @return the metadata.
     */
-  def getMetadataById(metadataId: String): T = {
+  override def getMetadataById(metadataId: String): T = {
     val pathToFile = createPathToFile(metadataId)
     val fileReader = new FileInputStream(pathToFile)
     val objectStream = new ObjectInputStream(fileReader)
 
     objectStream.readObject().asInstanceOf[T]
+  }
+
+  /**
+    * Delete a given metadata from the file system.
+    * @param metadataId used to locate the file
+    * @return True if it was deleted
+    */
+  override def deleteMetadataById(metadataId: String): Boolean = {
+    val pathToFile = createPathToFile(metadataId)
+    Files.delete(Paths.get(pathToFile))
+    Files.exists(Paths.get(pathToFile))
   }
 
   /**
