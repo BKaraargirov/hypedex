@@ -22,8 +22,33 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
 
     val storageLocation: String = metadataStore.saveMetadata(newMetadata)
 
+    Files.exists(Paths.get(storageLocation)) should equal(true)
+    Files.delete(Paths.get(storageLocation))
+  }
 
-    Files.exists(Paths.get(storageLocation))
+  "File" should "be readable" in {
+    val newMetadata = Metadata[Double](
+      id = "TestNodeRead",
+      distanceFunction = (x: Double, y: Double) => {x + y},
+      treeRoot = KDNode[Double](
+        dimensionName = "bla",
+        value = 5.0,
+        left = Option(KDNode[Double]("t1", 4.0, None, None)),
+        right = Option(KDNode[Double]("t1",3.0, None, None)),
+      )
+    )
+
+    val storageLocation: String = metadataStore.saveMetadata(newMetadata)
+
+    val retrievedMetadata: Metadata[Double] = metadataStore.getMetadataById(newMetadata.id)
+
+    retrievedMetadata.id should equal(newMetadata.id)
+    retrievedMetadata.distanceFunction.apply(1,2) should equal(3)
+    retrievedMetadata.treeRoot.dimensionName should equal(newMetadata.treeRoot.dimensionName)
+    retrievedMetadata.treeRoot.left.isDefined should equal(true)
+    retrievedMetadata.treeRoot.left.get.left.isEmpty should equal(true)
+
+    Files.delete(Paths.get(storageLocation))
   }
 
   "File location with trailing /" should "be correct" in {
@@ -31,7 +56,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
     val metadataName = "test"
     val testStore: BasicMetadataStore[Metadata[Any]] = BasicMetadataStore(baseLocation)
 
-    val actual = testStore.createFilePath(metadataName)
+    val actual = testStore.createPathToFile(metadataName)
 
     val expected = baseLocation + metadataName + testStore.fileExtension
 
@@ -43,7 +68,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
     val metadataName = "test"
     val testStore: BasicMetadataStore[Metadata[Any]] = BasicMetadataStore(baseLocation)
 
-    val actual = testStore.createFilePath(metadataName)
+    val actual = testStore.createPathToFile(metadataName)
 
     val expected = baseLocation + "/" + metadataName + testStore.fileExtension
 
