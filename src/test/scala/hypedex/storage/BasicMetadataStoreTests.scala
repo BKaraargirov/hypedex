@@ -25,4 +25,28 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
 
     Files.exists(Paths.get(storageLocation))
   }
+
+  "File location with trailing /" should "be correct" in {
+    val baseLocation ="/usr/local/temp/"
+    val metadataName = "test"
+    val testStore: BasicMetadataStore[Metadata[Any]] = BasicMetadataStore(baseLocation)
+
+    val actual = testStore.createFilePath(metadataName)
+
+    val expected = baseLocation + metadataName + testStore.fileExtension
+
+    actual should equal(expected)
+  }
+
+  "File location without trailing /" should "be correct" in {
+    val baseLocation ="/usr/local/temp"
+    val metadataName = "test"
+    val testStore: BasicMetadataStore[Metadata[Any]] = BasicMetadataStore(baseLocation)
+
+    val actual = testStore.createFilePath(metadataName)
+
+    val expected = baseLocation + "/" + metadataName + testStore.fileExtension
+
+    actual should equal(expected)
+  }
 }

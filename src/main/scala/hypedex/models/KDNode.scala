@@ -1,10 +1,8 @@
 package hypedex.models
 
-case class KDNode[T](
+case class KDNode[+NodeValue](
   dimensionName: String,
-  value: T,
-  left: Option[KDNode[T]],
-  right: Option[KDNode[T]]
-) {
-
-}
+  value: NodeValue,
+  left: Option[KDNode[NodeValue]],
+  right: Option[KDNode[NodeValue]]
+)
