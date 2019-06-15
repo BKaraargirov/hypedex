@@ -1,6 +1,8 @@
 package hypedex.models
 
-case class Metadata[+NodeValue] (
+import hypedex.models.payloads.HypedexPayload
+
+case class Metadata[+NodeValue <: HypedexPayload] (
  id: String,
  distanceFunction: (Double, Double) => Double,
  treeRoot: KDNode[NodeValue]

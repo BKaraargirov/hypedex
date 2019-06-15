@@ -1,6 +1,8 @@
 package hypedex.models
 
-case class KDNode[+NodeValue](
+import hypedex.models.payloads.HypedexPayload
+
+case class KDNode[+NodeValue <: HypedexPayload](
   dimensionName: String,
   value: NodeValue,
   left: Option[KDNode[NodeValue]],

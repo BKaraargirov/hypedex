@@ -4,13 +4,14 @@ import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutp
 import java.nio.file.{Files, Paths}
 
 import hypedex.models.Metadata
+import hypedex.models.payloads.HypedexPayload
 
 /**
   * Responsible for storing and retrieving the metadata from the local HDD
   * @param storageLocation where the metadatas will be placed
   * @tparam T Metadata or its subclass
   */
-class BasicMetadataStore[T <: Metadata[Any]](val storageLocation: String) extends TMetadataStore[T] {
+class BasicMetadataStore[T <: Metadata[HypedexPayload]](val storageLocation: String) extends TMetadataStore[T] {
   val fileExtension = ".hype"
   //TODO: Create a folder where all metadatas will be stored
 
@@ -67,6 +68,6 @@ class BasicMetadataStore[T <: Metadata[Any]](val storageLocation: String) extend
 }
 
 object BasicMetadataStore {
-  def apply[T <: Metadata[Any]](storageLocation: String): BasicMetadataStore[T] =
+  def apply[T <: Metadata[HypedexPayload]](storageLocation: String): BasicMetadataStore[T] =
     new BasicMetadataStore(storageLocation)
 }
