@@ -8,11 +8,10 @@ import hypedex.models.payloads.HypedexPayload
   * @param medianValue used for the split
   * @param left All values that where less than the median
   * @param right All values that where bigger or equal to the median
-  * @tparam NodeValue
   */
-case class KDNode[+NodeValue <: HypedexPayload](
+case class KDNode(
   dimensionName: String,
   medianValue: Double,
-  left: Option[KDNode[NodeValue]],
-  right: Option[KDNode[NodeValue]]
+  left: Option[KDNode],
+  right: Option[KDNode]
 )

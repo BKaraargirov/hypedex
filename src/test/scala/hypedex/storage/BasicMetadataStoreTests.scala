@@ -9,7 +9,7 @@ import org.apache.spark.sql.Row
 
 class BasicMetadataStoreTests extends FlatSpec with Matchers {
   val location = "./"
-  val metadataStore: BasicMetadataStore[Metadata[OneDimensionalPayload[Double]]] = BasicMetadataStore(location)
+  val metadataStore: BasicMetadataStore[Metadata] = BasicMetadataStore(location)
 
 
   "Files" should "have been created" in {
@@ -18,9 +18,9 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       distanceFunction = (x: Double, y: Double) => {x + y},
       treeRoot = KDNode(
         dimensionName = "bla",
-        value = OneDimensionalPayload("x", 5.0),
-        left = Option(KDNode("t1", OneDimensionalPayload("x", 4.0), None, None)),
-        right = Option(KDNode("t1",OneDimensionalPayload("x", 3.0), None, None)),
+        medianValue = 5.0,
+        left = Option(KDNode("t1", 4.0, None, None)),
+        right = Option(KDNode("t1",3.0, None, None)),
       )
     )
 
@@ -31,27 +31,25 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
   }
 
   "File" should "be readable" in {
-    val dimensionConstructor = OneDimensionalPayload.bindDimension[Double]("x")
-
     val newMetadata = Metadata(
       id = "TestNodeRead",
       distanceFunction = (x: Double, y: Double) => {x + y},
       treeRoot = KDNode(
         dimensionName = "bla",
-        value = dimensionConstructor(5.0),
-        left = Option(KDNode("t1", dimensionConstructor(4.0), None, None)),
-        right = Option(KDNode("t1", dimensionConstructor(3.0), None, None)),
+        medianValue = 5.0,
+        left = Option(KDNode("t1", 4.0, None, None)),
+        right = Option(KDNode("t1", 3.0, None, None)),
       )
     )
 
     val storageLocation: String = metadataStore.saveMetadata(newMetadata)
 
-    val retrievedMetadata: Metadata[OneDimensionalPayload[Double]] = metadataStore.getMetadataById(newMetadata.id)
+    val retrievedMetadata: Metadata = metadataStore.getMetadataById(newMetadata.id)
 
     retrievedMetadata.id should equal(newMetadata.id)
     retrievedMetadata.distanceFunction.apply(1,2) should equal(3)
     retrievedMetadata.treeRoot.dimensionName should equal(newMetadata.treeRoot.dimensionName)
-    retrievedMetadata.treeRoot.value.value should equal(5.0)
+    retrievedMetadata.treeRoot.medianValue should equal(5.0)
     retrievedMetadata.treeRoot.left.isDefined should equal(true)
     retrievedMetadata.treeRoot.left.get.left.isEmpty should equal(true)
 
@@ -59,16 +57,15 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
   }
 
   "File" should "be deleted properly" in {
-   val dimensionConstructor = OneDimensionalPayload.bindDimension[Double]("x")
 
     val newMetadata = Metadata(
       id = "TestNodeRead",
       distanceFunction = (x: Double, y: Double) => {x + y},
       treeRoot = KDNode(
         dimensionName = "bla",
-        value = dimensionConstructor(5.0),
-        left = Option(KDNode("t1", dimensionConstructor(4.0), None, None)),
-        right = Option(KDNode("t1", dimensionConstructor(3.0), None, None)),
+        medianValue = 5.0,
+        left = Option(KDNode("t1", 4.0, None, None)),
+        right = Option(KDNode("t1", 3.0, None, None)),
       )
     )
 
@@ -84,7 +81,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
   "File location with trailing /" should "be correct" in {
     val baseLocation ="/usr/local/temp/"
     val metadataName = "test"
-    val testStore: BasicMetadataStore[Metadata[OneDimensionalPayload[Double]]] = BasicMetadataStore(baseLocation)
+    val testStore: BasicMetadataStore[Metadata] = BasicMetadataStore(baseLocation)
 
     val actual = testStore.createPathToFile(metadataName)
 
@@ -96,7 +93,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
   "File location without trailing /" should "be correct" in {
     val baseLocation ="/usr/local/temp"
     val metadataName = "test"
-    val testStore: BasicMetadataStore[Metadata[OneDimensionalPayload[Double]]] = BasicMetadataStore(baseLocation)
+    val testStore: BasicMetadataStore[Metadata] = BasicMetadataStore(baseLocation)
 
     val actual = testStore.createPathToFile(metadataName)
 
