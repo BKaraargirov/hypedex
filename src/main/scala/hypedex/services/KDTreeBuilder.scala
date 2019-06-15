@@ -7,26 +7,23 @@ import org.apache.spark.sql.{Dataset, SQLContext}
 
 /**
   * Responsible for building the tree metadata and partitions
+  *
   * @param dimensionOrder The order in which dimensions should be used
   */
-class KDTreeBuilder[T <: HypedexPayload](val sqlContext: SQLContext)(
+class KDTreeBuilder[T <: HypedexPayload](
+  val sqlContext: SQLContext,
   dimensionOrder: Array[String]
 ) {
   // Should always be equal the the holder value of CalculationWrapper
   private val WRAPPER_PROPERTY = "x"
 
-  /**
-    * The class is used so the stat.approximateQuantile can know where the value is
-    * @param x is a holder
-    */
-  private case class CalculationWrapper(x: Double)
 
   /**
-    * @param data to be partitioned
+    * @param data  to be partitioned
     * @param depth of the tree
     * @return
     */
-  def buildTree(data: Dataset[T], depth: Int): KDNode[T] = {
+  def buildTree(data: Dataset[T], depth: Int): KDNode = {
     ???
   }
 
@@ -45,10 +42,17 @@ class KDTreeBuilder[T <: HypedexPayload](val sqlContext: SQLContext)(
       .stat.approxQuantile(WRAPPER_PROPERTY, Array(0.5), 0).head
 
 
-    val left = data.filter(p => p.getDimensions()(dimensionName) < splitPoint)
+    val left = data.filter((p: HypedexPayload) => p.getDimensions()(dimensionName) < splitPoint)
 
-    val right = data.filter(p => p.getDimensions()(dimensionName) >= splitPoint)
+    val right = data.filter((p: HypedexPayload) => p.getDimensions()(dimensionName) >= splitPoint)
 
     (left, right, splitPoint)
   }
 }
+
+/**
+  * The class is used so the stat.approximateQuantile can know where the value is
+  *
+  * @param x is a holder
+  */
+case class CalculationWrapper(x: Double)

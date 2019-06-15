@@ -10,8 +10,13 @@ object DataLoader {
   def getPoints(): List[Point] =
     Source.fromResource("pointdata.csv")
     .getLines()
+    .toList
     .map(line => {
-      val pointData: Array[String] = line.split(",")
-      Point(pointData(0).toDouble, pointData(1).toDouble, pointData(2).toDouble)
-    }).toList
+      if(line.contains("x"))
+        return null
+      else {
+        val pointData: Array[String] = line.split(",")
+        Point(pointData(0).toDouble, pointData(1).toDouble, pointData(2).toDouble)
+      }
+    }).filter(_ != null)
 }
