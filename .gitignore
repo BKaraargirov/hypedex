@@ -19,3 +19,5 @@ project/plugins/project/
 
 # Custom extensions
 *.hype
+
+.DS_store
