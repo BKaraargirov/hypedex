@@ -48,6 +48,15 @@ class KDTreeBuilder[T <: HypedexPayload](
 
     (left, right, splitPoint)
   }
+
+  /**
+    * Get the next dimension to be used in the tree builder proceess
+    * @param depth current depth of the tree
+    * @param dimensions The list of dimensions that will be used
+    * @return the name of the next dimension
+    */
+  def getTargetDimension(depth: Int, dimensions: Array[String]): String =
+    dimensions(depth % dimensions.length)
 }
 
 /**

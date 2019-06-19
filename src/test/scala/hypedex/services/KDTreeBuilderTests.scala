@@ -7,7 +7,8 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class KDTreeBuilderTests extends FlatSpec with Matchers {
   val session = SparkContextHolder.getSession()
-  val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, Array("x", "y", "z"))
+  val dimensArray = Array("x", "y", "z")
+  val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, dimensArray)
 
   "Splitting data" should "be on the median" in {
     import session.sqlContext.implicits._
@@ -21,5 +22,32 @@ class KDTreeBuilderTests extends FlatSpec with Matchers {
     split._3 should equal(5)
     split._1.count() should equal(4)
     split._2.count() should equal(5)
+  }
+
+  "Root level" should "return the first element" in {
+    val depth = 0
+    val expectedDimension = "x"
+
+    val actualResult = treeBuilder.getTargetDimension(depth, dimensArray)
+
+    actualResult should equal(expectedDimension)
+  }
+
+  "2rd level" should "return the last element" in {
+    val depth = 2
+    val expectedResult = "z"
+
+    val actualResult = treeBuilder.getTargetDimension(depth, dimensArray)
+
+    actualResult should equal(actualResult)
+  }
+
+  "3rd level" should "return the first element again" in {
+    val depth = 3
+    val expectedResult = "x"
+
+    val actualResult = treeBuilder.getTargetDimension(depth, dimensArray)
+
+    actualResult should equal(expectedResult)
   }
 }
