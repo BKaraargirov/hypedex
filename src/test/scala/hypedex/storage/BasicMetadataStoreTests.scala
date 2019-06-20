@@ -1,11 +1,8 @@
 package hypedex.storage
 
-import hypedex.models.{KDNode, Metadata}
+import hypedex.models.{EmptyNode, KDNode, Metadata}
 import org.scalatest.{FlatSpec, Matchers}
 import java.nio.file.{Files, Paths}
-
-import hypedex.models.payloads.OneDimensionalPayload
-import org.apache.spark.sql.Row
 
 class BasicMetadataStoreTests extends FlatSpec with Matchers {
   val location = "./"
@@ -19,8 +16,8 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       treeRoot = KDNode(
         dimensionName = "bla",
         medianValue = 5.0,
-        left = Option(KDNode("t1", 4.0, None, None)),
-        right = Option(KDNode("t1",3.0, None, None)),
+        left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
+        right = KDNode("t1",3.0, EmptyNode(), EmptyNode()),
       )
     )
 
@@ -37,8 +34,8 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       treeRoot = KDNode(
         dimensionName = "bla",
         medianValue = 5.0,
-        left = Option(KDNode("t1", 4.0, None, None)),
-        right = Option(KDNode("t1", 3.0, None, None)),
+        left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
+        right = KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
       )
     )
 
@@ -50,8 +47,9 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
     retrievedMetadata.distanceFunction.apply(1,2) should equal(3)
     retrievedMetadata.treeRoot.dimensionName should equal(newMetadata.treeRoot.dimensionName)
     retrievedMetadata.treeRoot.medianValue should equal(5.0)
-    retrievedMetadata.treeRoot.left.isDefined should equal(true)
-    retrievedMetadata.treeRoot.left.get.left.isEmpty should equal(true)
+    retrievedMetadata.treeRoot.left.isInstanceOf[KDNode] should equal(true)
+    retrievedMetadata.treeRoot.left.asInstanceOf[KDNode]
+      .left.isInstanceOf[EmptyNode] should equal(true)
 
     Files.delete(Paths.get(storageLocation))
   }
@@ -64,8 +62,8 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       treeRoot = KDNode(
         dimensionName = "bla",
         medianValue = 5.0,
-        left = Option(KDNode("t1", 4.0, None, None)),
-        right = Option(KDNode("t1", 3.0, None, None)),
+        left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
+        right = KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
       )
     )
 

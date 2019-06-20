@@ -1,6 +1,8 @@
 package hypedex.services
 
-import hypedex.models.KDNode
+import java.util.UUID
+
+import hypedex.models.{KDNode, PartitionNode, TreeNode}
 import hypedex.models.payloads.HypedexPayload
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{Dataset, SQLContext}
@@ -12,7 +14,8 @@ import org.apache.spark.sql.{Dataset, SQLContext}
   */
 class KDTreeBuilder[T <: HypedexPayload](
   val sqlContext: SQLContext,
-  dimensionOrder: Array[String]
+  dimensionOrder: Array[String],
+  hdfsUrl: String //TODO: Get rid of this.
 ) {
   // Should always be equal the the holder value of CalculationWrapper
   private val WRAPPER_PROPERTY = "x"
@@ -23,8 +26,25 @@ class KDTreeBuilder[T <: HypedexPayload](
     * @param depth of the tree
     * @return
     */
-  def buildTree(data: Dataset[T], depth: Int): KDNode = {
-    ???
+  def buildTree(data: Dataset[T], depth: Int): TreeNode = {
+    def loop(data: Dataset[T], currentDepth: Int): TreeNode = {
+      if (currentDepth > depth) {
+        PartitionNode(UUID.randomUUID().toString, hdfsUrl, Option(data))
+      }
+      else {
+        val dimName = getTargetDimension(currentDepth, dimensionOrder)
+        val (left, right, splitPoint) = split(data, dimName)
+
+        KDNode(
+          dimensionName = dimName,
+          medianValue = splitPoint,
+          left = loop(left, currentDepth + 1),
+          right = loop(right, currentDepth + 1)
+        )
+      }
+    }
+
+    loop(data, 0)
   }
 
   /**
@@ -60,7 +80,8 @@ class KDTreeBuilder[T <: HypedexPayload](
 }
 
 /**
-  * The class is used so the stat.approximateQuantile can know where the value is
+  * The class is used so the stat.approximateQuantile can know where the value is.
+  * Spark cannot serialize it when it's an inner class
   *
   * @param x is a holder
   */

@@ -1,5 +1,6 @@
 package hypedex.services
 
+import hypedex.models.{KDNode, PartitionNode}
 import hypedex.models.payloads.OneDimensionalPayload
 import hypedex.testUtils.{DataLoader, SparkContextHolder}
 import org.apache.spark.sql.Dataset
@@ -8,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class KDTreeBuilderTests extends FlatSpec with Matchers {
   val session = SparkContextHolder.getSession()
   val dimensArray = Array("x", "y", "z")
-  val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, dimensArray)
+  val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, dimensArray, "./")
 
   "Splitting data" should "be on the median" in {
     import session.sqlContext.implicits._
@@ -49,5 +50,31 @@ class KDTreeBuilderTests extends FlatSpec with Matchers {
     val actualResult = treeBuilder.getTargetDimension(depth, dimensArray)
 
     actualResult should equal(expectedResult)
+  }
+
+  "Build tree" should "be working" in {
+    import session.sqlContext.implicits._
+
+    val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, Array("x"), "./")
+    val wrap = OneDimensionalPayload.bindDimension("x")
+    val data = Array(wrap(1), wrap(2), wrap(15), wrap(90), wrap(4), wrap(5), wrap(5), wrap(-22), wrap(150))
+    val dataset: Dataset[OneDimensionalPayload] = session.sqlContext.createDataset(data)
+
+    val root = treeBuilder.buildTree(dataset, 1)
+
+    val p1 = root.asInstanceOf[KDNode].left.asInstanceOf[KDNode].left.asInstanceOf[PartitionNode[OneDimensionalPayload]]
+    val p2 = root.asInstanceOf[KDNode].right.asInstanceOf[KDNode].right.asInstanceOf[PartitionNode[OneDimensionalPayload]]
+
+    val base = root.asInstanceOf[KDNode].medianValue
+    val l1 = root.asInstanceOf[KDNode].left.asInstanceOf[KDNode].medianValue
+    val r1 = root.asInstanceOf[KDNode].right.asInstanceOf[KDNode].medianValue
+
+
+    p1.isInstanceOf[PartitionNode[OneDimensionalPayload]] shouldEqual true
+    p2.isInstanceOf[PartitionNode[OneDimensionalPayload]] shouldEqual true
+
+
+    dataset.filter(p => p.value < l1).count shouldEqual p1.data.get.count()
+    dataset.filter(p => p.value >= r1).count shouldEqual p2.data.get.count()
   }
 }

@@ -1,7 +1,5 @@
 package hypedex.models
 
-import hypedex.models.payloads.HypedexPayload
-
 /**
   *
   * @param dimensionName of the dimension used to split the data at the current tree level
@@ -12,6 +10,6 @@ import hypedex.models.payloads.HypedexPayload
 case class KDNode(
   dimensionName: String,
   medianValue: Double,
-  left: Option[KDNode],
-  right: Option[KDNode]
-)
+  left: TreeNode,
+  right: TreeNode
+) extends TreeNode
