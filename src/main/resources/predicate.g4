@@ -7,23 +7,29 @@ grammar predicate;
 prog: formula;
 
 formula
-: condition              #fCondition
-| formula 'AND' formula  #fAnd
-| formula 'OR' formula   #fOr
-| '(' formula ')'        #fParens
-| NOT formula            #fNegation
+: '(' formula ')'
+| condition
+| formula 'AND' formula
+| formula 'OR' formula
+| NOT formula
 ;
 
-condition: ID '=' NUMBER #Equals
-    | ID '<' NUMBER      #LessThan
-    | ID '>' NUMBER      #BiggerThan
-    | ID '<=' NUMBER     #LessThanEquals
-    | ID '>=' NUMBER     #BiggerThanEquals
+condition: id '=' NUMBER
+    | id '<' NUMBER
+    | id '>' NUMBER
+    | id '<=' NUMBER
+    | id '>=' NUMBER
+    | NUMBER '=' id
+    | NUMBER '<' id
+    | NUMBER '>' id
+    | NUMBER '<=' id
+    | NUMBER '>=' id
     ;
 
-NOT : '!';
-ID : [a-zA-Z]+ ;      ​// match identifiers​
-NUMBER : ('0' .. '9') + ('.' ('0' .. '9') +)?; // match a number
-INT : [0-9]+ ;         ​// match integers​
-NEWLINE:​'\r'​? ​'\n' -> skip​ ;     ​// return newlines to parser (end-statement signal)​
-WS : [ \t]+ -> skip ; ​// toss out whitespace​
+id:ID;
+
+NOT:'!';
+ID:[a-zA-Z][a-zA-Z0-9]*?;// match identifiers
+NUMBER:'-'?('0' .. '9')+ ('.' ('0' .. '9') +)?; // match a number
+NEWLINE:'\r'? '\n' -> skip ;     // return newlines to parser (end-statement signal)
+WS:[\t]+ -> skip ; // toss out whitespace
