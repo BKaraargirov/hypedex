@@ -1,3 +1,3 @@
 package hypedex.logicalEngine.model
 
-class LogicalExpression(value: Double)
+class LogicalExpression(val value: Double, val isInclusive: Boolean)

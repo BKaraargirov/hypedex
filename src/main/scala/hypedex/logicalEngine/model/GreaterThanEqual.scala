@@ -1,5 +1,5 @@
 package hypedex.logicalEngine.model
 
-case class GreaterThanEqual(value: Double) extends LogicalExpression(value) {
+case class GreaterThanEqual(override val value: Double) extends LogicalExpression(value, true) {
 
 }
