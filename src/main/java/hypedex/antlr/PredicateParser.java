@@ -1,6 +1,7 @@
+// Generated from Predicate.g4 by ANTLR 4.7.2
+
 package hypedex.antlr;
 
-// Generated from Predicate.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -21,10 +22,10 @@ public class PredicateParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, OR=8, AND=9, NOT=10, 
 		ID=11, NUMBER=12, NEWLINE=13, WS=14;
 	public static final int
-		RULE_prog = 0, RULE_formula = 1, RULE_condition = 2, RULE_id = 3;
+		RULE_prog = 0, RULE_formula = 1, RULE_condition = 2, RULE_id = 3, RULE_number = 4;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"prog", "formula", "condition", "id"
+			"prog", "formula", "condition", "id", "number"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -122,7 +123,7 @@ public class PredicateParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(8);
+			setState(10);
 			formula(0);
 			}
 		}
@@ -268,7 +269,7 @@ public class PredicateParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(18);
+			setState(20);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
@@ -277,11 +278,11 @@ public class PredicateParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(11);
-				match(T__0);
-				setState(12);
-				formula(0);
 				setState(13);
+				match(T__0);
+				setState(14);
+				formula(0);
+				setState(15);
 				match(T__1);
 				}
 				break;
@@ -291,7 +292,7 @@ public class PredicateParser extends Parser {
 				_localctx = new SingleFormulaContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(15);
+				setState(17);
 				condition();
 				}
 				break;
@@ -300,9 +301,9 @@ public class PredicateParser extends Parser {
 				_localctx = new NegationContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(16);
+				setState(18);
 				match(NOT);
-				setState(17);
+				setState(19);
 				formula(1);
 				}
 				break;
@@ -310,7 +311,7 @@ public class PredicateParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(28);
+			setState(30);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -318,18 +319,18 @@ public class PredicateParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(26);
+					setState(28);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 					case 1:
 						{
 						_localctx = new AndConnectionContext(new FormulaContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_formula);
-						setState(20);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(21);
-						match(AND);
 						setState(22);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(23);
+						match(AND);
+						setState(24);
 						formula(4);
 						}
 						break;
@@ -337,18 +338,18 @@ public class PredicateParser extends Parser {
 						{
 						_localctx = new OrConnectionContext(new FormulaContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_formula);
-						setState(23);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(24);
-						match(OR);
 						setState(25);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(26);
+						match(OR);
+						setState(27);
 						formula(3);
 						}
 						break;
 					}
 					} 
 				}
-				setState(30);
+				setState(32);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			}
@@ -366,25 +367,124 @@ public class PredicateParser extends Parser {
 	}
 
 	public static class ConditionContext extends ParserRuleContext {
-		public IdContext id() {
-			return getRuleContext(IdContext.class,0);
-		}
-		public TerminalNode NUMBER() { return getToken(PredicateParser.NUMBER, 0); }
 		public ConditionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_condition; }
+	 
+		public ConditionContext() { }
+		public void copyFrom(ConditionContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class LessThanEqualConditionContext extends ConditionContext {
+		public IdContext id() {
+			return getRuleContext(IdContext.class,0);
+		}
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public LessThanEqualConditionContext(ConditionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterCondition(this);
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterLessThanEqualCondition(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitCondition(this);
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitLessThanEqualCondition(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitCondition(this);
+			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitLessThanEqualCondition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class GreaterThanEqualConditionContext extends ConditionContext {
+		public IdContext id() {
+			return getRuleContext(IdContext.class,0);
+		}
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public GreaterThanEqualConditionContext(ConditionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterGreaterThanEqualCondition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitGreaterThanEqualCondition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitGreaterThanEqualCondition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class GreaterThanConditionContext extends ConditionContext {
+		public IdContext id() {
+			return getRuleContext(IdContext.class,0);
+		}
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public GreaterThanConditionContext(ConditionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterGreaterThanCondition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitGreaterThanCondition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitGreaterThanCondition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class LessThanConditionContext extends ConditionContext {
+		public IdContext id() {
+			return getRuleContext(IdContext.class,0);
+		}
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public LessThanConditionContext(ConditionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterLessThanCondition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitLessThanCondition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitLessThanCondition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class EqualConditionContext extends ConditionContext {
+		public IdContext id() {
+			return getRuleContext(IdContext.class,0);
+		}
+		public TerminalNode NUMBER() { return getToken(PredicateParser.NUMBER, 0); }
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public EqualConditionContext(ConditionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterEqualCondition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitEqualCondition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitEqualCondition(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -393,116 +493,126 @@ public class PredicateParser extends Parser {
 		ConditionContext _localctx = new ConditionContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_condition);
 		try {
-			setState(66);
+			setState(73);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 			case 1:
+				_localctx = new EqualConditionContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(31);
-				id();
-				setState(32);
-				match(T__2);
 				setState(33);
+				id();
+				setState(34);
+				match(T__2);
+				setState(35);
 				match(NUMBER);
 				}
 				break;
 			case 2:
+				_localctx = new LessThanConditionContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(35);
-				id();
-				setState(36);
-				match(T__3);
 				setState(37);
-				match(NUMBER);
+				id();
+				setState(38);
+				match(T__3);
+				setState(39);
+				number();
 				}
 				break;
 			case 3:
+				_localctx = new GreaterThanConditionContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(39);
-				id();
-				setState(40);
-				match(T__4);
 				setState(41);
-				match(NUMBER);
+				id();
+				setState(42);
+				match(T__4);
+				setState(43);
+				number();
 				}
 				break;
 			case 4:
+				_localctx = new LessThanEqualConditionContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(43);
-				id();
-				setState(44);
-				match(T__5);
 				setState(45);
-				match(NUMBER);
+				id();
+				setState(46);
+				match(T__5);
+				setState(47);
+				number();
 				}
 				break;
 			case 5:
+				_localctx = new GreaterThanEqualConditionContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(47);
-				id();
-				setState(48);
-				match(T__6);
 				setState(49);
-				match(NUMBER);
+				id();
+				setState(50);
+				match(T__6);
+				setState(51);
+				number();
 				}
 				break;
 			case 6:
+				_localctx = new EqualConditionContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(51);
-				match(NUMBER);
-				setState(52);
-				match(T__2);
 				setState(53);
+				number();
+				setState(54);
+				match(T__2);
+				setState(55);
 				id();
 				}
 				break;
 			case 7:
+				_localctx = new GreaterThanConditionContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(54);
-				match(NUMBER);
-				setState(55);
-				match(T__3);
-				setState(56);
-				id();
-				}
-				break;
-			case 8:
-				enterOuterAlt(_localctx, 8);
-				{
 				setState(57);
-				match(NUMBER);
+				number();
 				setState(58);
-				match(T__4);
+				match(T__3);
 				setState(59);
 				id();
 				}
 				break;
+			case 8:
+				_localctx = new LessThanConditionContext(_localctx);
+				enterOuterAlt(_localctx, 8);
+				{
+				setState(61);
+				number();
+				setState(62);
+				match(T__4);
+				setState(63);
+				id();
+				}
+				break;
 			case 9:
+				_localctx = new GreaterThanEqualConditionContext(_localctx);
 				enterOuterAlt(_localctx, 9);
 				{
-				setState(60);
-				match(NUMBER);
-				setState(61);
+				setState(65);
+				number();
+				setState(66);
 				match(T__5);
-				setState(62);
+				setState(67);
 				id();
 				}
 				break;
 			case 10:
+				_localctx = new LessThanEqualConditionContext(_localctx);
 				enterOuterAlt(_localctx, 10);
 				{
-				setState(63);
-				match(NUMBER);
-				setState(64);
+				setState(69);
+				number();
+				setState(70);
 				match(T__6);
-				setState(65);
+				setState(71);
 				id();
 				}
 				break;
@@ -546,8 +656,50 @@ public class PredicateParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
+			setState(75);
 			match(ID);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class NumberContext extends ParserRuleContext {
+		public TerminalNode NUMBER() { return getToken(PredicateParser.NUMBER, 0); }
+		public NumberContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_number; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterNumber(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitNumber(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitNumber(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NumberContext number() throws RecognitionException {
+		NumberContext _localctx = new NumberContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_number);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(77);
+			match(NUMBER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -579,26 +731,27 @@ public class PredicateParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20I\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\25\n\3"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\7\3\35\n\3\f\3\16\3 \13\3\3\4\3\4\3\4\3\4\3\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20R\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3"+
+		"\27\n\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3\37\n\3\f\3\16\3\"\13\3\3\4\3\4\3\4"+
 		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
-		"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4E\n\4\3\5\3\5\3"+
-		"\5\2\3\4\6\2\4\6\b\2\2\2Q\2\n\3\2\2\2\4\24\3\2\2\2\6D\3\2\2\2\bF\3\2\2"+
-		"\2\n\13\5\4\3\2\13\3\3\2\2\2\f\r\b\3\1\2\r\16\7\3\2\2\16\17\5\4\3\2\17"+
-		"\20\7\4\2\2\20\25\3\2\2\2\21\25\5\6\4\2\22\23\7\f\2\2\23\25\5\4\3\3\24"+
-		"\f\3\2\2\2\24\21\3\2\2\2\24\22\3\2\2\2\25\36\3\2\2\2\26\27\f\5\2\2\27"+
-		"\30\7\13\2\2\30\35\5\4\3\6\31\32\f\4\2\2\32\33\7\n\2\2\33\35\5\4\3\5\34"+
-		"\26\3\2\2\2\34\31\3\2\2\2\35 \3\2\2\2\36\34\3\2\2\2\36\37\3\2\2\2\37\5"+
-		"\3\2\2\2 \36\3\2\2\2!\"\5\b\5\2\"#\7\5\2\2#$\7\16\2\2$E\3\2\2\2%&\5\b"+
-		"\5\2&\'\7\6\2\2\'(\7\16\2\2(E\3\2\2\2)*\5\b\5\2*+\7\7\2\2+,\7\16\2\2,"+
-		"E\3\2\2\2-.\5\b\5\2./\7\b\2\2/\60\7\16\2\2\60E\3\2\2\2\61\62\5\b\5\2\62"+
-		"\63\7\t\2\2\63\64\7\16\2\2\64E\3\2\2\2\65\66\7\16\2\2\66\67\7\5\2\2\67"+
-		"E\5\b\5\289\7\16\2\29:\7\6\2\2:E\5\b\5\2;<\7\16\2\2<=\7\7\2\2=E\5\b\5"+
-		"\2>?\7\16\2\2?@\7\b\2\2@E\5\b\5\2AB\7\16\2\2BC\7\t\2\2CE\5\b\5\2D!\3\2"+
-		"\2\2D%\3\2\2\2D)\3\2\2\2D-\3\2\2\2D\61\3\2\2\2D\65\3\2\2\2D8\3\2\2\2D"+
-		";\3\2\2\2D>\3\2\2\2DA\3\2\2\2E\7\3\2\2\2FG\7\r\2\2G\t\3\2\2\2\6\24\34"+
-		"\36D";
+		"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
+		"\3\4\3\4\5\4L\n\4\3\5\3\5\3\6\3\6\3\6\2\3\4\7\2\4\6\b\n\2\2\2Y\2\f\3\2"+
+		"\2\2\4\26\3\2\2\2\6K\3\2\2\2\bM\3\2\2\2\nO\3\2\2\2\f\r\5\4\3\2\r\3\3\2"+
+		"\2\2\16\17\b\3\1\2\17\20\7\3\2\2\20\21\5\4\3\2\21\22\7\4\2\2\22\27\3\2"+
+		"\2\2\23\27\5\6\4\2\24\25\7\f\2\2\25\27\5\4\3\3\26\16\3\2\2\2\26\23\3\2"+
+		"\2\2\26\24\3\2\2\2\27 \3\2\2\2\30\31\f\5\2\2\31\32\7\13\2\2\32\37\5\4"+
+		"\3\6\33\34\f\4\2\2\34\35\7\n\2\2\35\37\5\4\3\5\36\30\3\2\2\2\36\33\3\2"+
+		"\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!\5\3\2\2\2\" \3\2\2\2#$\5\b\5"+
+		"\2$%\7\5\2\2%&\7\16\2\2&L\3\2\2\2\'(\5\b\5\2()\7\6\2\2)*\5\n\6\2*L\3\2"+
+		"\2\2+,\5\b\5\2,-\7\7\2\2-.\5\n\6\2.L\3\2\2\2/\60\5\b\5\2\60\61\7\b\2\2"+
+		"\61\62\5\n\6\2\62L\3\2\2\2\63\64\5\b\5\2\64\65\7\t\2\2\65\66\5\n\6\2\66"+
+		"L\3\2\2\2\678\5\n\6\289\7\5\2\29:\5\b\5\2:L\3\2\2\2;<\5\n\6\2<=\7\6\2"+
+		"\2=>\5\b\5\2>L\3\2\2\2?@\5\n\6\2@A\7\7\2\2AB\5\b\5\2BL\3\2\2\2CD\5\n\6"+
+		"\2DE\7\b\2\2EF\5\b\5\2FL\3\2\2\2GH\5\n\6\2HI\7\t\2\2IJ\5\b\5\2JL\3\2\2"+
+		"\2K#\3\2\2\2K\'\3\2\2\2K+\3\2\2\2K/\3\2\2\2K\63\3\2\2\2K\67\3\2\2\2K;"+
+		"\3\2\2\2K?\3\2\2\2KC\3\2\2\2KG\3\2\2\2L\7\3\2\2\2MN\7\r\2\2N\t\3\2\2\2"+
+		"OP\7\16\2\2P\13\3\2\2\2\6\26\36 K";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

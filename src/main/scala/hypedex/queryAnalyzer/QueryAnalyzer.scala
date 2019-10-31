@@ -9,10 +9,11 @@ import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 
 class QueryAnalyzer {
 
-  def splitQueryCondition(tree: ParseTree, ids: Set[String]): Map[String, String] = {
+  def splitQueryCondition(tree: ParseTree, ids: Set[String]): QuerySplitter.Mapping = {
     val querySplitter = new QuerySplitter(ids)
     querySplitter.visit(tree)
   }
+
   def getIds(tree: ParseTree): Set[String] = {
     val idExtractor = new IdExtractor()
     val walker = new ParseTreeWalker()

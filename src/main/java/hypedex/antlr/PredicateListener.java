@@ -1,6 +1,7 @@
+// Generated from Predicate.g4 by ANTLR 4.7.2
+
 package hypedex.antlr;
 
-// Generated from Predicate.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -79,15 +80,65 @@ public interface PredicateListener extends ParseTreeListener {
 	 */
 	void exitOrConnection(PredicateParser.OrConnectionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PredicateParser#condition}.
+	 * Enter a parse tree produced by the {@code EqualCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void enterCondition(PredicateParser.ConditionContext ctx);
+	void enterEqualCondition(PredicateParser.EqualConditionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PredicateParser#condition}.
+	 * Exit a parse tree produced by the {@code EqualCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void exitCondition(PredicateParser.ConditionContext ctx);
+	void exitEqualCondition(PredicateParser.EqualConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code LessThanCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterLessThanCondition(PredicateParser.LessThanConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LessThanCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitLessThanCondition(PredicateParser.LessThanConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GreaterThanCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterGreaterThanCondition(PredicateParser.GreaterThanConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GreaterThanCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitGreaterThanCondition(PredicateParser.GreaterThanConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code LessThanEqualCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterLessThanEqualCondition(PredicateParser.LessThanEqualConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LessThanEqualCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitLessThanEqualCondition(PredicateParser.LessThanEqualConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GreaterThanEqualCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterGreaterThanEqualCondition(PredicateParser.GreaterThanEqualConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GreaterThanEqualCondition}
+	 * labeled alternative in {@link PredicateParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitGreaterThanEqualCondition(PredicateParser.GreaterThanEqualConditionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PredicateParser#id}.
 	 * @param ctx the parse tree
@@ -98,4 +149,14 @@ public interface PredicateListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitId(PredicateParser.IdContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PredicateParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(PredicateParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PredicateParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(PredicateParser.NumberContext ctx);
 }

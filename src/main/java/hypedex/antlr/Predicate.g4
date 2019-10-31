@@ -4,6 +4,10 @@
 
 grammar Predicate;
 
+@header {
+package hypedex.antlr;
+}
+
 prog: formula;
 
 formula
@@ -14,19 +18,20 @@ formula
 | NOT formula             #Negation
 ;
 
-condition: id '=' NUMBER
-    | id '<' NUMBER
-    | id '>' NUMBER
-    | id '<=' NUMBER
-    | id '>=' NUMBER
-    | NUMBER '=' id
-    | NUMBER '<' id
-    | NUMBER '>' id
-    | NUMBER '<=' id
-    | NUMBER '>=' id
+condition: id '=' NUMBER #EqualCondition
+    | id '<' number #LessThanCondition
+    | id '>' number #GreaterThanCondition
+    | id '<=' number #LessThanEqualCondition
+    | id '>=' number #GreaterThanEqualCondition
+    | number '=' id #EqualCondition
+    | number '<' id #GreaterThanCondition
+    | number '>' id #LessThanCondition
+    | number '<=' id #GreaterThanEqualCondition
+    | number '>=' id #LessThanEqualCondition
     ;
 
 id:ID;
+number:NUMBER;
 
 OR: 'OR';
 AND: 'AND';

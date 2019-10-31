@@ -1,6 +1,7 @@
+// Generated from Predicate.g4 by ANTLR 4.7.2
+
 package hypedex.antlr;
 
-// Generated from Predicate.g4 by ANTLR 4.7.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -89,13 +90,61 @@ public class PredicateBaseListener implements PredicateListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCondition(PredicateParser.ConditionContext ctx) { }
+	@Override public void enterEqualCondition(PredicateParser.EqualConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCondition(PredicateParser.ConditionContext ctx) { }
+	@Override public void exitEqualCondition(PredicateParser.EqualConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLessThanCondition(PredicateParser.LessThanConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLessThanCondition(PredicateParser.LessThanConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGreaterThanCondition(PredicateParser.GreaterThanConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGreaterThanCondition(PredicateParser.GreaterThanConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLessThanEqualCondition(PredicateParser.LessThanEqualConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLessThanEqualCondition(PredicateParser.LessThanEqualConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterGreaterThanEqualCondition(PredicateParser.GreaterThanEqualConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGreaterThanEqualCondition(PredicateParser.GreaterThanEqualConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -108,6 +157,18 @@ public class PredicateBaseListener implements PredicateListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitId(PredicateParser.IdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNumber(PredicateParser.NumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumber(PredicateParser.NumberContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
