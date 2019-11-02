@@ -14,6 +14,7 @@ class KDTreeBuilderTests extends FlatSpec with Matchers {
   "Splitting data" should "be on the median" in {
     import session.sqlContext.implicits._
 
+
     val wrap = OneDimensionalPayload.bindDimension("x")
     val data = Array(wrap(1), wrap(2), wrap(15), wrap(90), wrap(4), wrap(5), wrap(5), wrap(-22), wrap(150))
     val dataset: Dataset[OneDimensionalPayload] = session.sqlContext.createDataset(data)
@@ -54,6 +55,7 @@ class KDTreeBuilderTests extends FlatSpec with Matchers {
 
   "Build tree" should "be working" in {
     import session.sqlContext.implicits._
+
 
     val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, Array("x"), "./")
     val wrap = OneDimensionalPayload.bindDimension("x")

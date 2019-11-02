@@ -1,4 +1,4 @@
-package hypedex.logicalEngine.model
+package hypedex.queryAnalyzer.models
 
 /**
   *

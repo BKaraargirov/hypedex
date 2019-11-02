@@ -2,14 +2,14 @@ package hypedex.queryAnalyzer
 
 import hypedex.antlr.PredicateParser.NumberContext
 import hypedex.antlr.{PredicateBaseListener, PredicateBaseVisitor, PredicateParser}
-import hypedex.logicalEngine.model.{Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression}
-import hypedex.queryAnalyzer.QuerySplitter.Mapping
+import hypedex.queryAnalyzer.QueryDestructor.Mapping
+import hypedex.queryAnalyzer.models.{Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression}
 
 /**
   * Split a WHERE clause in to multiple where clauses: one for each variable
   * @param ids
   */
-class QuerySplitter(ids: Set[String]) extends PredicateBaseVisitor[Mapping] {
+class QueryDestructor(ids: Set[String]) extends PredicateBaseVisitor[Mapping] {
   override def visitEqualCondition (ctx: PredicateParser.EqualConditionContext): Mapping =
     Map(ctx.id().getText -> Set[LogicalExpression](Equals(parseNumber(ctx.number()))))
 
@@ -45,6 +45,6 @@ class QuerySplitter(ids: Set[String]) extends PredicateBaseVisitor[Mapping] {
   private def parseNumber(number: NumberContext): Double = number.NUMBER().getText.toDouble
 }
 
-object QuerySplitter {
+object QueryDestructor {
   type Mapping = Map[String, Set[LogicalExpression]]
 }

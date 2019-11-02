@@ -1,8 +1,7 @@
 package hypedex
 
-import hypedex.logicalEngine.model.AccumulatedFilter
 import hypedex.models.payloads.HypedexPayload
-import hypedex.models.{KDNode, Metadata, PartitionNode, TreeNode}
+import hypedex.models.{DimensionPredicate, KDNode, Metadata, PartitionNode, TreeNode}
 import hypedex.storage.TMetadataStore
 import org.apache.spark.sql.Dataset
 
@@ -18,7 +17,7 @@ class Hypedex[T <: HypedexPayload](
   }
 
   //TODO: make parralel
-  def findSubset(root: TreeNode, filters: Map[String, AccumulatedFilter]): List[PartitionNode[T]] = {
+  def findSubset(root: TreeNode, filters: Map[String, DimensionPredicate]): List[PartitionNode[T]] = {
     if(root.isInstanceOf[PartitionNode[T]]) {
       return List(root.asInstanceOf[PartitionNode[T]])
     }

@@ -1,7 +1,8 @@
 package hypedex
 
-import hypedex.logicalEngine.model.{AccumulatedFilter, GreaterThan, LessThan}
+import hypedex.models.DimensionPredicate
 import hypedex.models.payloads.OneDimensionalPayload
+import hypedex.queryAnalyzer.models.{GreaterThan, LessThan}
 import hypedex.services.KDTreeBuilder
 import hypedex.testUtils.SparkContextHolder
 import org.apache.spark.sql.Dataset
@@ -23,7 +24,7 @@ class HypedexTests extends FlatSpec with Matchers {
 
     val root = treeBuilder.buildTree(dataset, 2)
 
-    val filters = AccumulatedFilter(Set(GreaterThan(140)))
+    val filters = DimensionPredicate("x", Set(GreaterThan(140)))
 
     val result = hypedex.findSubset(root, Map("x" -> filters))
 
@@ -42,7 +43,7 @@ class HypedexTests extends FlatSpec with Matchers {
 
     val root = treeBuilder.buildTree(dataset, 2)
 
-    val filters = AccumulatedFilter(Set(GreaterThan(5), LessThan(90)))
+    val filters = DimensionPredicate("x", Set(GreaterThan(5), LessThan(90)))
 
     val result = hypedex.findSubset(root, Map("x" -> filters))
 

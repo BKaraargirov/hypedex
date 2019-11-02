@@ -1,12 +1,12 @@
-package hypedex.logicalEngine.model
+package hypedex.models
 
-import scala.collection.immutable.SortedSet
-
+import hypedex.queryAnalyzer.models.{Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression}
 
 /**
   * Contains the acceptable values
   */
-case class AccumulatedFilter(
+case class DimensionPredicate(
+   dimensionName: String,
   private val conditions: Set[LogicalExpression] = Set[LogicalExpression]()
 ) {
   val upperBound: Double = findUpperBound(conditions)

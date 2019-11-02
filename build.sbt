@@ -8,5 +8,6 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % "2.4.3",
   "org.antlr" % "antlr4-runtime" % "4.7.2", 
   "org.scalactic" %% "scalactic" % "3.0.5",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "com.github.jsqlparser" % "jsqlparser" % "3.0"
 )
