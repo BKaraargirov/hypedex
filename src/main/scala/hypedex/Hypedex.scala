@@ -18,28 +18,37 @@ class Hypedex[T <: HypedexPayload](
 
   //TODO: make parralel
   def findSubset(root: TreeNode, filters: Map[String, DimensionPredicate]): List[PartitionNode[T]] = {
-    if(root.isInstanceOf[PartitionNode[T]]) {
-      return List(root.asInstanceOf[PartitionNode[T]])
+    def loop(node: TreeNode): List[PartitionNode[T]] = {
+      if(root.isInstanceOf[PartitionNode[T]]) {
+        return List(root.asInstanceOf[PartitionNode[T]])
+      }
+
+      val node = root.asInstanceOf[KDNode]
+
+      if(filters.contains(node.dimensionName) == false) {
+        findSubset(node.left, filters) ++ findSubset(node.right, filters)
+      }
+
+      val f = filters(node.dimensionName)
+
+      // TODO: Need to support OR clauses
+      // TODO: Is the second range needed
+      val r = if(f.upperBound >= node.medianValue || f.isWithinRange(node.medianValue))
+        findSubset(node.right, filters)
+      else List()
+
+      val l = if(f.lowerBound < node.medianValue)
+        findSubset(node.left, filters)
+      else List()
+
+      r ++ l
     }
 
-    val node = root.asInstanceOf[KDNode]
-
-    if(filters.contains(node.dimensionName) == false) {
-      findSubset(node.left, filters) ++ findSubset(node.right, filters)
-    }
-
-    val f = filters(node.dimensionName)
-
-    // TODO: Need to support OR clauses
-    // TODO: Is the second range needed
-    val r = if(f.upperBound >= node.medianValue || f.isWithinRange(node.medianValue))
-      findSubset(node.right, filters)
-     else List()
-
-    val l = if(f.lowerBound < node.medianValue)
-      findSubset(node.left, filters)
-    else List()
-
-    r ++ l
+    loop(root)
+//      .filter(node => {
+//      filters.map {
+//        case (dimName, predicates: DimensionPredicate) => predicates.hasIntersection(node.boundary(dimName))
+//      }.forall(_ == true)
+//    })
   }
 }

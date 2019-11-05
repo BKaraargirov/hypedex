@@ -2,9 +2,9 @@ package hypedex.services
 
 import java.util.UUID
 
-import hypedex.models.{KDNode, PartitionNode, TreeNode}
+import hypedex.models.{CalculationWrapper, KDNode, PartitionBoundary, PartitionNode, TreeNode}
 import hypedex.models.payloads.HypedexPayload
-import org.apache.spark.SparkContext
+import hypedex.queryAnalyzer.models.{GreaterThanEqual, LessThan}
 import org.apache.spark.sql.{Dataset, SQLContext}
 
 /**
@@ -27,24 +27,28 @@ class KDTreeBuilder[T <: HypedexPayload](
     * @return
     */
   def buildTree(data: Dataset[T], depth: Int): TreeNode = {
-    def loop(data: Dataset[T], currentDepth: Int): TreeNode = {
+    def loop(data: Dataset[T], currentDepth: Int, boundary: Map[String, PartitionBoundary]): TreeNode = {
       if (currentDepth > depth) {
-        PartitionNode(UUID.randomUUID().toString, hdfsUrl, Option(data))
+        PartitionNode(UUID.randomUUID().toString, hdfsUrl, boundary, Option(data))
       }
       else {
         val dimName = getTargetDimension(currentDepth, dimensionOrder)
         val (left, right, splitPoint) = split(data, dimName)
 
+        val leftBoundary= boundary + (dimName -> boundary(dimName).updateBoundary(LessThan(splitPoint)))
+        val rightBoundary = boundary + (dimName -> boundary(dimName).updateBoundary(GreaterThanEqual(splitPoint)))
+
         KDNode(
           dimensionName = dimName,
           medianValue = splitPoint,
-          left = loop(left, currentDepth + 1),
-          right = loop(right, currentDepth + 1)
+          left = loop(left, currentDepth + 1, leftBoundary),
+          right = loop(right, currentDepth + 1, rightBoundary)
         )
       }
     }
 
-    loop(data, 0)
+    val defaultBoundaries = dimensionOrder.map(dim => dim -> PartitionBoundary(dim)).toMap
+    loop(data, 0, defaultBoundaries)
   }
 
   /**
@@ -79,10 +83,3 @@ class KDTreeBuilder[T <: HypedexPayload](
     dimensions(depth % dimensions.length)
 }
 
-/**
-  * The class is used so the stat.approximateQuantile can know where the value is.
-  * Spark cannot serialize it when it's an inner class
-  *
-  * @param x is a holder
-  */
-case class CalculationWrapper(x: Double)

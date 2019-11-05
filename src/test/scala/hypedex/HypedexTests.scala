@@ -43,11 +43,11 @@ class HypedexTests extends FlatSpec with Matchers {
 
     val root = treeBuilder.buildTree(dataset, 2)
 
-    val filters = DimensionPredicate("x", Set(GreaterThan(5), LessThan(90)))
+    val filters = DimensionPredicate("x", Set(GreaterThan(15), LessThan(90)))
 
     val result = hypedex.findSubset(root, Map("x" -> filters))
 
-    result.size shouldBe 2
+    result.size shouldBe 1
     result.head.data.get.collect()
   }
 

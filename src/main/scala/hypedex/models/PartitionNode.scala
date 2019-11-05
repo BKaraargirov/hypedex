@@ -9,10 +9,12 @@ import org.apache.spark.sql.Dataset
   *
   * @param id will act as file name aswell.
   * @param dataUrl The space where the data is being stored. Currently only hdfs is supported
+  * @param boundary Specifies the exact frame of the data located within the partition.
   * @param data to be stored
   */
 case class PartitionNode[T <: HypedexPayload](
   id: String,
   dataUrl: String,
+  boundary: Map[String, PartitionBoundary],
   @transient data: Option[Dataset[T]]
 ) extends TreeNode

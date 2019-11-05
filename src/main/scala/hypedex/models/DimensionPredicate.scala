@@ -14,6 +14,8 @@ case class DimensionPredicate(
 
   def isWithinRange(point: Double): Boolean = this.conditions.forall(_.isWithinRange(point))
 
+  def hasIntersection(boundary: PartitionBoundary): Boolean = this.conditions.exists(boundary.doesIntersectionExists)
+
   def findUpperBound(expressions: Set[LogicalExpression]): Double = {
     val rightMostExpression = expressions.maxBy(exp => (exp.value, exp.direction))
 
