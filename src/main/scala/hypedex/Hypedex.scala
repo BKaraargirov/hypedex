@@ -3,17 +3,15 @@ package hypedex
 import hypedex.models.payloads.HypedexPayload
 import hypedex.models.{DimensionPredicate, KDNode, Metadata, PartitionNode, TreeNode}
 import hypedex.storage.TMetadataStore
-import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.{DataFrame, Dataset, SQLContext}
 
 class Hypedex[T <: HypedexPayload](
-  private val metadataStore: TMetadataStore[Metadata]
+  private val metadataStore: TMetadataStore[Metadata],
+  private val sqlContext: SQLContext
 ) {
-  def loadData(metadataId: String, whereClause: String): Dataset[Any] = {
-    val metadata = this.metadataStore.getMetadataById(metadataId)
 
-
-
-    ???
+  def loadData(partitions: List[PartitionNode[T]]): DataFrame = {
+    sqlContext.read.parquet(partitions.map(_.dataUrl):_*)
   }
 
   //TODO: make parralel
