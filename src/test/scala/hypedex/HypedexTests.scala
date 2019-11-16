@@ -16,7 +16,7 @@ class HypedexTests extends FlatSpec with Matchers {
   "Filter" should "return to one partition" in {
     import session.sqlContext.implicits._
 
-    val hypedex = new Hypedex[OneDimensionalPayload](null)
+    val hypedex = new Hypedex[OneDimensionalPayload](null, session.sqlContext)
     val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, Array("x"), "./")
     val wrap = OneDimensionalPayload.bindDimension("x")
     val data = Array(wrap(1), wrap(2), wrap(15), wrap(90), wrap(4), wrap(5), wrap(5), wrap(-22), wrap(150))
@@ -35,7 +35,7 @@ class HypedexTests extends FlatSpec with Matchers {
   "Filter 2" should "return to one partition" in {
     import session.sqlContext.implicits._
 
-    val hypedex = new Hypedex[OneDimensionalPayload](null)
+    val hypedex = new Hypedex[OneDimensionalPayload](null, session.sqlContext)
     val treeBuilder = new KDTreeBuilder[OneDimensionalPayload](session.sqlContext, Array("x"), "./")
     val wrap = OneDimensionalPayload.bindDimension("x")
     val data = Array(wrap(1), wrap(2), wrap(15), wrap(90), wrap(4), wrap(5), wrap(6), wrap(11), wrap(5), wrap(-22), wrap(150))

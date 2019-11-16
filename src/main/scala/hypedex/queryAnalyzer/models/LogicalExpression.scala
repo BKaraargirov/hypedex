@@ -6,7 +6,8 @@ package hypedex.queryAnalyzer.models
   * @param isInclusive
   * @param direction should be -1, 0 or 1.
   */
-abstract class LogicalExpression(val value: Double, val isInclusive: Boolean, val direction: Int) {
+abstract class LogicalExpression(val value: Double, val isInclusive: Boolean,
+  val direction: Int) extends LogicalTreeNode {
   assert(direction == 0 || direction == -1 || direction == 1)
 
   def isDirectionPositive: Boolean = this.direction > 0
