@@ -1,17 +1,15 @@
 package hypedex.queryAnalyzer.models
 
-sealed class BooleanNode(
-  val children: List[LogicalTreeNode]
-) extends LogicalTreeNode
+sealed class BooleanNode() extends LogicalTreeNode {}
 
 case class AndNode (
-  override val children: List[LogicalTreeNode]
-) extends BooleanNode(children)
+  children: List[LogicalTreeNode]
+) extends BooleanNode
 
 case class OrNode (
-  override val children: List[LogicalTreeNode]
-) extends BooleanNode(children)
+  children: List[LogicalTreeNode]
+) extends BooleanNode
 
 case class NotNode (
-  override val children: List[LogicalTreeNode]
-) extends BooleanNode(children)
+  child: LogicalTreeNode
+) extends BooleanNode()
