@@ -1,42 +1,39 @@
 package hypedex.models
 
-import hypedex.queryAnalyzer.models.{Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression}
+import hypedex.queryAnalyzer.LogicalEngine
+import hypedex.queryAnalyzer.models.{AndNode, BooleanNode, Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression, LogicalTreeNode, OrNode}
 
 /**
   * Contains the acceptable values
   */
 case class DimensionPredicate(
    dimensionName: String,
-  private val conditions: Set[LogicalExpression] = Set[LogicalExpression]()
+   private val conditions: BooleanNode
 ) {
-  val upperBound: Double = findUpperBound(conditions)
-  val lowerBound: Double = findLowerBound(conditions)
+  val upperBound: Double = LogicalEngine.findUpperBound(conditions)
+  val lowerBound: Double = LogicalEngine.findLowerBound(conditions)
 
-  def isWithinRange(point: Double): Boolean = this.conditions.forall(_.isWithinRange(point))
-
-  def hasIntersection(boundary: PartitionBoundary): Boolean = this.conditions.exists(boundary.doesIntersectionExists)
-
-  def findUpperBound(expressions: Set[LogicalExpression]): Double = {
-    val rightMostExpression = expressions.maxBy(exp => (exp.value, exp.direction))
-
-    rightMostExpression match {
-      case GreaterThan(_) => Double.PositiveInfinity
-      case GreaterThanEqual(_) => Double.PositiveInfinity
-      case Equals(value) => value
-      case LessThan(value) => value - 1
-      case LessThanEqual(value) => value
+  def isWithinRange(point: Double): Boolean = {
+    def loop(node: LogicalTreeNode) : Boolean= {
+      node match {
+        case AndNode(children) => children.forall(loop)
+        case OrNode(children) => children.exists(loop)
+        case leaf: LogicalExpression => leaf.isWithinRange(point)
+      }
     }
+
+    loop(conditions)
   }
 
-  def findLowerBound(expressions: Set[LogicalExpression]): Double = {
-    val leftMostExpression = expressions.minBy(exp => (exp.value, exp.direction))
-
-    leftMostExpression match {
-      case GreaterThan(value) => value + 1
-      case GreaterThanEqual(value) => value
-      case Equals(value) => value
-      case LessThan(_) => Double.NegativeInfinity
-      case LessThanEqual(_) => Double.NegativeInfinity
+  def hasIntersection(boundary: PartitionBoundary): Boolean = {
+    def loop(node: LogicalTreeNode): Boolean = {
+      node match {
+        case AndNode(children) => children.exists(loop)
+        case OrNode(children) => children.exists(loop)
+        case leaf: LogicalExpression => boundary.doesIntersectionExists(leaf)
+      }
     }
+
+    loop(this.conditions)
   }
 }
