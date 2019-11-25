@@ -20,7 +20,6 @@ class KDTreeBuilder[T <: HypedexPayload](
   // Should always be equal the the holder value of CalculationWrapper
   private val WRAPPER_PROPERTY = "x"
 
-
   /**
     * @param data  to be partitioned
     * @param depth of the tree

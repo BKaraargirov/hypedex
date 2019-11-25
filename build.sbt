@@ -11,3 +11,5 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
   "com.github.jsqlparser" % "jsqlparser" % "3.0"
 )
+
+testOptions in Test += Tests.Argument("-oD")
