@@ -2,9 +2,10 @@ package hypedex.services
 
 import java.util.UUID
 
-import hypedex.models.{CalculationWrapper, KDNode, PartitionBoundary, PartitionNode, TreeNode}
+import hypedex.models.{CalculationWrapper, KDNode, Metadata, PartitionBoundary, PartitionNode, TreeNode}
 import hypedex.models.payloads.HypedexPayload
 import hypedex.queryAnalyzer.models.{GreaterThanEqual, LessThan}
+import hypedex.storage.{PartitionStore, TMetadataStore}
 import org.apache.spark.sql.{Dataset, SQLContext}
 
 /**
@@ -14,11 +15,11 @@ import org.apache.spark.sql.{Dataset, SQLContext}
   */
 class KDTreeBuilder[T <: HypedexPayload](
   val sqlContext: SQLContext,
-  dimensionOrder: Array[String],
-  hdfsUrl: String //TODO: Get rid of this.
+  dimensionOrder: Array[String]
 ) {
   // Should always be equal the the holder value of CalculationWrapper
   private val WRAPPER_PROPERTY = "x"
+  private val metadataSubfolder = "metadata" //TODO: extract to config
 
   /**
     * @param data  to be partitioned
@@ -28,7 +29,7 @@ class KDTreeBuilder[T <: HypedexPayload](
   def buildTree(data: Dataset[T], depth: Int): TreeNode = {
     def loop(data: Dataset[T], currentDepth: Int, boundary: Map[String, PartitionBoundary]): TreeNode = {
       if (currentDepth > depth) {
-        PartitionNode(UUID.randomUUID().toString, hdfsUrl, boundary, Option(data))
+        PartitionNode(UUID.randomUUID().toString, boundary, Option(data))
       }
       else {
         val dimName = getTargetDimension(currentDepth, dimensionOrder)
@@ -62,7 +63,7 @@ class KDTreeBuilder[T <: HypedexPayload](
 
     val splitPoint = data
       .map(p => CalculationWrapper(p.getDimensions()(dimensionName)))
-      .stat.approxQuantile(WRAPPER_PROPERTY, Array(0.5), 0).head
+      .stat.approxQuantile(WRAPPER_PROPERTY, Array(0.5), 0.25).head
 
 
     val left = data.filter((p: HypedexPayload) => p.getDimensions()(dimensionName) < splitPoint)

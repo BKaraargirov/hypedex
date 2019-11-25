@@ -21,18 +21,21 @@ case class AirQuality(
 
 class KDBuilderPerformanceTest extends FlatSpec {
   val session = SparkContextHolder.getSession()
+  val baseDir = "/Users/silver/Documents/nbu/sofia-air-quality-dataset/"
+  val partitionStore = ParquetPartitionStore[AirQuality](session)
 
   "It" should "run" in {
     import session.implicits._
 
     val dimensArray = Array("P1", "P2")
-    val treeBuilder = new KDTreeBuilder[AirQuality](session.sqlContext, dimensArray, "D:\\source\\datasets\\sofia-air-quality-dataset\\kd-tree")
-    val depth = 7
+    val treeBuilder = new KDTreeBuilder[AirQuality](session.sqlContext, dimensArray, this.partitionStore, s"${baseDir}kd-tree")
+
+    val depth = 4
 
     val partitionStore = new ParquetPartitionStore[AirQuality](session)
 
     val ds = session.read.option("header", "true")
-      .csv("D:\\source\\datasets\\sofia-air-quality-dataset\\*2018*sds*.csv")
+      .csv(s"${baseDir}*2019*sds*.csv")
       .map{ r: Row => AirQuality(
         r.getString(1),
         r.getString(2),

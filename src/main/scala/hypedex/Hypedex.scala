@@ -9,6 +9,8 @@ class Hypedex[T <: HypedexPayload](
   private val metadataStore: TMetadataStore[Metadata],
   private val sqlContext: SQLContext
 ) {
+  def convertData(originSets: String)
+
 
   def loadData(partitions: List[PartitionNode[T]]): DataFrame = {
     sqlContext.read.parquet(partitions.map(_.dataUrl):_*)
