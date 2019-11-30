@@ -5,7 +5,7 @@ import java.util.UUID
 import hypedex.models.{KDNode, Metadata, PartitionNode, TreeNode}
 import hypedex.models.payloads.HypedexPayload
 import hypedex.storage.{PartitionStore, TMetadataStore}
-import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.{Encoder, Row, SparkSession}
 
 import scala.collection.mutable
 
@@ -20,16 +20,19 @@ class DataManipulationService[T <: HypedexPayload](
     originalFilePattern: String,
     targetDataDir: String,
     mapper: Row => T,
-    distanceFunction: (Double, Double) => Double
-  ): Metadata = {
+    distanceFunction: (Double, Double) => Double,
+    depth: Int =  3
+  )(implicit enc: Encoder[T]): Metadata = {
     import session.implicits._
 
     val ds = session.read.option("header", "true")
       .csv(s"${originalDataDir}/${originalFilePattern}")
       .map(mapper)
 
-    val kdTree = kdTreeBuilder.buildTree(ds, 4)
+    ds.persist()
+    val kdTree = kdTreeBuilder.buildTree(ds, depth)
     persistParquets(kdTree, targetDataDir)
+    ds.unpersist()
     val metadata = Metadata(UUID.randomUUID().toString, distanceFunction, kdTree)
     this.metadataStore.saveMetadata(metadata)
 
@@ -45,7 +48,6 @@ class DataManipulationService[T <: HypedexPayload](
       currentNode match {
         case partition: PartitionNode[T] => this.partitionRepository.save(partition, targetDir)
         case node: KDNode => queue.enqueue(node.left, node.right)
-        case _ => _
       }
     }
   }

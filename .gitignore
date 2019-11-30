@@ -19,5 +19,6 @@ project/plugins/project/
 
 # Custom extensions
 *.hype
+testResults/
 
 .DS_store

@@ -1,8 +1,8 @@
 package hypedex.services
 
-import hypedex.models.{KDNode, PartitionNode, TreeNode}
+import hypedex.models.{KDNode, Metadata, PartitionNode, TreeNode}
 import hypedex.models.payloads.HypedexPayload
-import hypedex.storage.ParquetPartitionStore
+import hypedex.storage.{BasicMetadataStore, ParquetPartitionStore}
 import hypedex.testUtils.SparkContextHolder
 import org.apache.spark.sql.{Dataset, Row}
 import org.scalatest.FlatSpec
@@ -21,22 +21,28 @@ case class AirQuality(
 
 class KDBuilderPerformanceTest extends FlatSpec {
   val session = SparkContextHolder.getSession()
-  val baseDir = "/Users/silver/Documents/nbu/sofia-air-quality-dataset/"
+  val baseDir = "/Users/silver/Documents/nbu/sofia-air-quality-dataset"
+  val metadataDir = s"${baseDir}/metadata"
   val partitionStore = ParquetPartitionStore[AirQuality](session)
+  val metadataStore = new BasicMetadataStore[Metadata](metadataDir)
 
   "It" should "run" in {
     import session.implicits._
 
     val dimensArray = Array("P1", "P2")
-    val treeBuilder = new KDTreeBuilder[AirQuality](session.sqlContext, dimensArray, this.partitionStore, s"${baseDir}kd-tree")
+    val treeBuilder = new KDTreeBuilder[AirQuality](session.sqlContext, dimensArray)
+    val dataManipulationService = new DataManipulationService[AirQuality](session, partitionStore, metadataStore, treeBuilder)
 
-    val depth = 4
+    val depth = 2
 
-    val partitionStore = new ParquetPartitionStore[AirQuality](session)
+    dataManipulationService.createPartitions(
+      baseDir,
+      "*2019*sds*.csv",
+      s"${baseDir}/kd-tree",
+      {
+        import session.implicits._
 
-    val ds = session.read.option("header", "true")
-      .csv(s"${baseDir}*2019*sds*.csv")
-      .map{ r: Row => AirQuality(
+        r: Row => AirQuality(
         r.getString(1),
         r.getString(2),
         r.getString(3),
@@ -52,16 +58,8 @@ class KDBuilderPerformanceTest extends FlatSpec {
           if(p2 == null) Double.NaN
           else p2.toDouble
         }
-      ) }
-
-    val root = treeBuilder.buildTree(ds, depth)
-
-    def loop(node: TreeNode): Unit =
-      node match {
-        case x: PartitionNode[AirQuality] => partitionStore.save(x)
-        case x: KDNode =>
-          loop(x.left)
-          loop(x.right)
-      }
+      ) },
+      null
+    )
   }
 }

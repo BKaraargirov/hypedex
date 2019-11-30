@@ -5,7 +5,7 @@ import org.scalatest.{FlatSpec, Matchers}
 import java.nio.file.{Files, Paths}
 
 class BasicMetadataStoreTests extends FlatSpec with Matchers {
-  val location = "./"
+  val location = "/Users/silver/source/Hypedex/testResults"
   val metadataStore: BasicMetadataStore[Metadata] = BasicMetadataStore(location)
 
 
@@ -45,10 +45,10 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
 
     retrievedMetadata.id should equal(newMetadata.id)
     retrievedMetadata.distanceFunction.apply(1,2) should equal(3)
-    retrievedMetadata.treeRoot.dimensionName should equal(newMetadata.treeRoot.dimensionName)
-    retrievedMetadata.treeRoot.medianValue should equal(5.0)
-    retrievedMetadata.treeRoot.left.isInstanceOf[KDNode] should equal(true)
-    retrievedMetadata.treeRoot.left.asInstanceOf[KDNode]
+    retrievedMetadata.treeRoot.asInstanceOf[KDNode].dimensionName should equal(newMetadata.treeRoot.asInstanceOf[KDNode].dimensionName)
+    retrievedMetadata.treeRoot.asInstanceOf[KDNode].medianValue should equal(5.0)
+    retrievedMetadata.treeRoot.asInstanceOf[KDNode].left.isInstanceOf[KDNode] should equal(true)
+    retrievedMetadata.treeRoot.asInstanceOf[KDNode].left.asInstanceOf[KDNode]
       .left.isInstanceOf[EmptyNode] should equal(true)
 
     Files.delete(Paths.get(storageLocation))

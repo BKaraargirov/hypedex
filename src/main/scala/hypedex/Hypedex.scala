@@ -9,12 +9,9 @@ class Hypedex[T <: HypedexPayload](
   private val metadataStore: TMetadataStore[Metadata],
   private val sqlContext: SQLContext
 ) {
-  def convertData(originSets: String)
-
-
-  def loadData(partitions: List[PartitionNode[T]]): DataFrame = {
-    sqlContext.read.parquet(partitions.map(_.dataUrl):_*)
-  }
+//  def loadData(partitions: List[PartitionNode[T]]): DataFrame = {
+//    sqlContext.read.parquet(partitions.map(_.dataUrl):_*)
+//  }
 
   //TODO: make parralel
   def findSubset(root: TreeNode, filters: Map[String, DimensionPredicate]): List[PartitionNode[T]] = {

@@ -7,7 +7,7 @@ object SparkContextHolder {
   val conf: SparkConf = new SparkConf()
     .setAppName("HypedexTests")
     .setMaster("local")
-      .set("spark.sql.files.maxPartitionBytes", "20000000")
+      //.set("spark.sql.files.maxPartitionBytes", "20000000")
     .set("spark.driver.maxResultSize", "3g")
     .set("spark.driver.memory", "10g")
 
