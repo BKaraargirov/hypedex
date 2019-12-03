@@ -2,49 +2,74 @@ package hypedex.queryAnalyzer
 
 import hypedex.antlr.PredicateParser.NumberContext
 import hypedex.antlr.{PredicateBaseListener, PredicateBaseVisitor, PredicateParser}
+import hypedex.models.DimensionPredicate
 import hypedex.queryAnalyzer.QueryDestructor.Mapping
-import hypedex.queryAnalyzer.models.{Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression}
+import hypedex.queryAnalyzer.models.{AndNode, Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression, LogicalTreeNode}
+
+import scala.collection.mutable
+
 
 /**
   * Split a WHERE clause in to multiple where clauses: one for each variable
   * @param ids
   */
-class QueryDestructor(ids: Set[String]) extends PredicateBaseVisitor[Mapping] {
-  override def visitEqualCondition (ctx: PredicateParser.EqualConditionContext): Mapping =
-    Map(ctx.id().getText -> Set[LogicalExpression](Equals(parseNumber(ctx.number()))))
+class QueryDestructor(ids: Set[String]) extends PredicateBaseListener {
+  private var predicates: mutable.Map[String, List[LogicalTreeNode]] = ids.map(_ -> List()) // x :: list list.tail(pop) / head
 
-
-  override def visitGreaterThanCondition (ctx: PredicateParser.GreaterThanConditionContext): Mapping =
-    Map(ctx.id().getText -> Set[LogicalExpression](GreaterThan(parseNumber(ctx.number()))))
-
-
-  override def visitGreaterThanEqualCondition (ctx: PredicateParser.GreaterThanEqualConditionContext): Mapping =
-    Map(ctx.id().getText -> Set[LogicalExpression](GreaterThanEqual(parseNumber(ctx.number()))))
-
-
-  override def visitLessThanCondition (ctx: PredicateParser.LessThanConditionContext): Mapping =
-    Map(ctx.id().getText -> Set[LogicalExpression](LessThan(parseNumber(ctx.number()))))
-
-  override def visitLessThanEqualCondition (ctx: PredicateParser.LessThanEqualConditionContext): Mapping =
-    Map(ctx.id().getText -> Set[LogicalExpression](LessThanEqual(parseNumber(ctx.number()))))
-
-  override def visitAndConnection(ctx: PredicateParser.AndConnectionContext): Mapping = {
-    mergeMaps(visit(ctx.formula(0)), visit(ctx.formula(1)))
+  override def exitAndConnection(ctx: PredicateParser.AndConnectionContext): Unit = {
+    ids.foreach(id => {
+      if(predicates(id).nonEmpty) {
+        predicates(id) = List(AndNode(predicates(id)))
+      }
+    })
   }
 
-  override def visitOrConnection(ctx: PredicateParser.OrConnectionContext): Mapping = {
-    mergeMaps(visit(ctx.formula(0)), visit(ctx.formula(1)))
+  override def enterEqualCondition(ctx: PredicateParser.EqualConditionContext): Unit = {
+    val id = ctx.id().getText
+    val expression = Equals(parseNumber(ctx.number()))
+
+    predicates(id) = expression:: predicates(id)
   }
 
-  private def mergeMaps(x: Mapping, y: Mapping): Mapping = {
-    val merged = x.toSeq ++ y.toSeq
+  override def enterGreaterThanCondition (ctx: PredicateParser.GreaterThanConditionContext): Unit = {
+    val id = ctx.id().getText
+    val expression = GreaterThan(parseNumber(ctx.number()))
 
-    merged.groupBy(_._1).map(pair => (pair._1, pair._2.flatMap(_._2).toSet))
+    predicates(id) = expression:: predicates(id)
   }
 
-  private def parseNumber(number: NumberContext): Double = number.NUMBER().getText.toDouble
+  override def enterGreaterThanEqualCondition (ctx: PredicateParser.GreaterThanEqualConditionContext): Unit = {
+    val id = ctx.id().getText
+    val expression = GreaterThanEqual(parseNumber(ctx.number()))
+
+    predicates(id) = expression:: predicates(id)
+  }
+
+  override def enterLessThanCondition (ctx: PredicateParser.LessThanConditionContext): Unit = {
+    val id = ctx.id().getText
+    val expression = LessThan(parseNumber(ctx.number()))
+
+    predicates(id) = expression:: predicates(id)
+  }
+
+  override def enterLessThanEqualCondition (ctx: PredicateParser.LessThanEqualConditionContext): Unit = {
+    val id = ctx.id().getText
+    val expression = LessThanEqual(parseNumber(ctx.number()))
+
+    predicates(id) = expression:: predicates(id)
+  }
+
+//  override def visitAndConnection(ctx: PredicateParser.AndConnectionContext): Mapping = {
+//    mergeMaps(visit(ctx.formula(0)), visit(ctx.formula(1)))
+//  }
+//
+//  override def visitOrConnection(ctx: PredicateParser.OrConnectionContext): Mapping = {
+//    mergeMaps(visit(ctx.formula(0)), visit(ctx.formula(1)))
+//  }
+
+   private def parseNumber(number: NumberContext): Double = number.NUMBER().getText.toDouble
 }
 
 object QueryDestructor {
-  type Mapping = Map[String, Set[LogicalExpression]]
+  type Mapping = Map[String, DimensionPredicate]
 }

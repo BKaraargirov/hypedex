@@ -21,8 +21,10 @@ case class AirQuality(
 
 class KDBuilderPerformanceTest extends FlatSpec {
   val session = SparkContextHolder.getSession()
-  val baseDir = "/Users/silver/Documents/nbu/sofia-air-quality-dataset"
-  val metadataDir = s"${baseDir}/metadata"
+  val baseDirWin = "D:\\source\\datasets\\sofia-air-quality-dataset"
+  val baseDir = baseDirWin//"/Users/silver/Documents/nbu/sofia-air-quality-dataset"
+  val metadataDirWin = s"${baseDir}\\metadata"
+  val metadataDir = metadataDirWin//s"${baseDir}/metadata"
   val partitionStore = ParquetPartitionStore[AirQuality](session)
   val metadataStore = new BasicMetadataStore[Metadata](metadataDir)
 
