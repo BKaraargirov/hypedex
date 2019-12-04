@@ -4,7 +4,7 @@ import hypedex.antlr.PredicateParser.NumberContext
 import hypedex.antlr.{PredicateBaseListener, PredicateBaseVisitor, PredicateParser}
 import hypedex.models.DimensionPredicate
 import hypedex.queryAnalyzer.QueryDestructor.Mapping
-import hypedex.queryAnalyzer.models.{AndNode, Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression, LogicalTreeNode}
+import hypedex.queryAnalyzer.models.{AndNode, Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression, LogicalTreeNode, OrNode}
 
 import scala.collection.mutable
 
@@ -20,6 +20,14 @@ class QueryDestructor(ids: Set[String]) extends PredicateBaseListener {
     ids.foreach(id => {
       if(predicates(id).nonEmpty) {
         predicates(id) = List(AndNode(predicates(id)))
+      }
+    })
+  }
+
+  override def exitOrConnection(ctx: PredicateParser.OrConnectionContext): Unit = {
+    ids.foreach(id => {
+      if(predicates(id).nonEmpty) {
+        predicates(id) = List(OrNode(predicates(id)))
       }
     })
   }
