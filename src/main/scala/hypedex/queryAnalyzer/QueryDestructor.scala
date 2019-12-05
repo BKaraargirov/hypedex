@@ -14,7 +14,7 @@ import scala.collection.mutable
   * @param ids
   */
 class QueryDestructor(ids: Set[String]) extends PredicateBaseListener {
-  private var predicates: mutable.Map[String, List[LogicalTreeNode]] = ids.map(_ -> List()) // x :: list list.tail(pop) / head
+  private var predicates: mutable.Map[String, List[LogicalTreeNode]] = mutable.Map(ids.map(_ -> List[LogicalTreeNode]()).toSeq : _*) // x :: list list.tail(pop) / head
 
   override def exitAndConnection(ctx: PredicateParser.AndConnectionContext): Unit = {
     ids.foreach(id => {
