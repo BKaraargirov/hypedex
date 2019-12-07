@@ -31,7 +31,7 @@ class DataManipulationService[T <: HypedexPayload](
     val kdTree = kdTreeBuilder.buildTree(ds, depth)
     persistParquets(kdTree, targetDataDir)
     ds.unpersist()
-    val metadata = Metadata(UUID.randomUUID().toString, distanceFunction, kdTree)
+    val metadata = Metadata(UUID.randomUUID().toString, distanceFunction, kdTree, targetDataDir)
     this.metadataStore.saveMetadata(metadata)
 
     metadata
@@ -51,7 +51,7 @@ class DataManipulationService[T <: HypedexPayload](
   }
 
   def loadParquets(targetNodes: List[PartitionNode[T]],
-                   baseDir: String)(implicit enc: Encoder[T]): Dataset[T] = {
+                   baseDir: String, mapper: Row => T = this.mapper)(implicit enc: Encoder[T]): Dataset[T] = {
     session.sqlContext
       .read
       .parquet(targetNodes.map(node => s"${baseDir}/${node.id}"):_*)

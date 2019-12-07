@@ -14,7 +14,7 @@ import scala.collection.mutable
   * @param ids
   */
 class QueryDestructor(ids: Set[String]) extends PredicateBaseListener {
-  private var predicates: mutable.Map[String, List[LogicalTreeNode]] = mutable.Map(ids.map(_ -> List[LogicalTreeNode]()).toSeq : _*) // x :: list list.tail(pop) / head
+  private val predicates: mutable.Map[String, List[LogicalTreeNode]] = mutable.Map(ids.map(_ -> List[LogicalTreeNode]()).toSeq : _*) // x :: list list.tail(pop) / head
 
   override def exitAndConnection(ctx: PredicateParser.AndConnectionContext): Unit = {
     ids.foreach(id => {
@@ -32,40 +32,46 @@ class QueryDestructor(ids: Set[String]) extends PredicateBaseListener {
     })
   }
 
-  override def enterEqualCondition(ctx: PredicateParser.EqualConditionContext): Unit = {
+  override def exitEqualCondition(ctx: PredicateParser.EqualConditionContext): Unit = {
     val id = ctx.id().getText
     val expression = Equals(parseNumber(ctx.number()))
 
     predicates(id) = expression:: predicates(id)
   }
 
-  override def enterGreaterThanCondition (ctx: PredicateParser.GreaterThanConditionContext): Unit = {
+  override def exitGreaterThanCondition (ctx: PredicateParser.GreaterThanConditionContext): Unit = {
     val id = ctx.id().getText
     val expression = GreaterThan(parseNumber(ctx.number()))
 
     predicates(id) = expression:: predicates(id)
   }
 
-  override def enterGreaterThanEqualCondition (ctx: PredicateParser.GreaterThanEqualConditionContext): Unit = {
+  override def exitGreaterThanEqualCondition (ctx: PredicateParser.GreaterThanEqualConditionContext): Unit = {
     val id = ctx.id().getText
     val expression = GreaterThanEqual(parseNumber(ctx.number()))
 
     predicates(id) = expression:: predicates(id)
   }
 
-  override def enterLessThanCondition (ctx: PredicateParser.LessThanConditionContext): Unit = {
+  override def exitLessThanCondition (ctx: PredicateParser.LessThanConditionContext): Unit = {
     val id = ctx.id().getText
     val expression = LessThan(parseNumber(ctx.number()))
 
     predicates(id) = expression:: predicates(id)
   }
 
-  override def enterLessThanEqualCondition (ctx: PredicateParser.LessThanEqualConditionContext): Unit = {
+  override def exitLessThanEqualCondition (ctx: PredicateParser.LessThanEqualConditionContext): Unit = {
     val id = ctx.id().getText
     val expression = LessThanEqual(parseNumber(ctx.number()))
 
     predicates(id) = expression:: predicates(id)
   }
+
+  def getPredicates(): Map[String, LogicalTreeNode] =
+    this.predicates
+        .filter(_._2.nonEmpty)
+        .map { case (k, v) => (k, v.head) }
+        .toMap
 
 //  override def visitAndConnection(ctx: PredicateParser.AndConnectionContext): Mapping = {
 //    mergeMaps(visit(ctx.formula(0)), visit(ctx.formula(1)))
@@ -79,5 +85,5 @@ class QueryDestructor(ids: Set[String]) extends PredicateBaseListener {
 }
 
 object QueryDestructor {
-  type Mapping = Map[String, DimensionPredicate]
+  type Mapping = Map[String, LogicalTreeNode]
 }

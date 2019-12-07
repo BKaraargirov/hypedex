@@ -1,9 +1,11 @@
 package hypedex.models
 
+import hypedex.queryAnalyzer.models.{BooleanNode, LogicalTreeNode}
+
 class PartitionPredicate(
-  val mapping: Map[String, DimensionPredicate]
+  val mapping: Map[String, LogicalTreeNode]
 ) extends Serializable {
-  def getPredicate(dimensionName: String): DimensionPredicate = mapping(dimensionName)
+  def getPredicate(dimensionName: String): LogicalTreeNode = mapping(dimensionName)
 
   //region Generated
   def canEqual(other: Any): Boolean = other.isInstanceOf[PartitionPredicate]

@@ -56,17 +56,17 @@ public interface PredicateListener extends ParseTreeListener {
 	 */
 	void exitParanthesis(PredicateParser.ParanthesisContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code SingleFormula}
+	 * Enter a parse tree produced by the {@code ConditionNode}
 	 * labeled alternative in {@link PredicateParser#formula}.
 	 * @param ctx the parse tree
 	 */
-	void enterSingleFormula(PredicateParser.SingleFormulaContext ctx);
+	void enterConditionNode(PredicateParser.ConditionNodeContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code SingleFormula}
+	 * Exit a parse tree produced by the {@code ConditionNode}
 	 * labeled alternative in {@link PredicateParser#formula}.
 	 * @param ctx the parse tree
 	 */
-	void exitSingleFormula(PredicateParser.SingleFormulaContext ctx);
+	void exitConditionNode(PredicateParser.ConditionNodeContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code OrConnection}
 	 * labeled alternative in {@link PredicateParser#formula}.

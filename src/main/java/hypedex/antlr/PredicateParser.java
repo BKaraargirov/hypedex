@@ -110,11 +110,6 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitProg(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitProg(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ProgContext prog() throws RecognitionException {
@@ -166,11 +161,6 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitAndConnection(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitAndConnection(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class NegationContext extends FormulaContext {
 		public TerminalNode NOT() { return getToken(PredicateParser.NOT, 0); }
@@ -186,11 +176,6 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitNegation(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitNegation(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ParanthesisContext extends FormulaContext {
 		public FormulaContext formula() {
@@ -205,29 +190,19 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitParanthesis(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitParanthesis(this);
-			else return visitor.visitChildren(this);
-		}
 	}
-	public static class SingleFormulaContext extends FormulaContext {
+	public static class ConditionNodeContext extends FormulaContext {
 		public ConditionContext condition() {
 			return getRuleContext(ConditionContext.class,0);
 		}
-		public SingleFormulaContext(FormulaContext ctx) { copyFrom(ctx); }
+		public ConditionNodeContext(FormulaContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterSingleFormula(this);
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).enterConditionNode(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitSingleFormula(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitSingleFormula(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitConditionNode(this);
 		}
 	}
 	public static class OrConnectionContext extends FormulaContext {
@@ -246,11 +221,6 @@ public class PredicateParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitOrConnection(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitOrConnection(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -286,25 +256,25 @@ public class PredicateParser extends Parser {
 				match(T__1);
 				}
 				break;
-			case ID:
-			case NUMBER:
-				{
-				_localctx = new SingleFormulaContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(17);
-				condition();
-				}
-				break;
 			case NOT:
 				{
 				_localctx = new NegationContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(18);
+				setState(17);
 				match(NOT);
+				setState(18);
+				formula(2);
+				}
+				break;
+			case ID:
+			case NUMBER:
+				{
+				_localctx = new ConditionNodeContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(19);
-				formula(1);
+				condition();
 				}
 				break;
 			default:
@@ -327,11 +297,11 @@ public class PredicateParser extends Parser {
 						_localctx = new AndConnectionContext(new FormulaContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_formula);
 						setState(22);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
 						setState(23);
 						match(AND);
 						setState(24);
-						formula(4);
+						formula(5);
 						}
 						break;
 					case 2:
@@ -339,11 +309,11 @@ public class PredicateParser extends Parser {
 						_localctx = new OrConnectionContext(new FormulaContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_formula);
 						setState(25);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
 						setState(26);
 						match(OR);
 						setState(27);
-						formula(3);
+						formula(4);
 						}
 						break;
 					}
@@ -393,11 +363,6 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitLessThanEqualCondition(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitLessThanEqualCondition(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class GreaterThanEqualConditionContext extends ConditionContext {
 		public IdContext id() {
@@ -414,11 +379,6 @@ public class PredicateParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitGreaterThanEqualCondition(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitGreaterThanEqualCondition(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class GreaterThanConditionContext extends ConditionContext {
@@ -437,11 +397,6 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitGreaterThanCondition(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitGreaterThanCondition(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class LessThanConditionContext extends ConditionContext {
 		public IdContext id() {
@@ -459,17 +414,11 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitLessThanCondition(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitLessThanCondition(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class EqualConditionContext extends ConditionContext {
 		public IdContext id() {
 			return getRuleContext(IdContext.class,0);
 		}
-		public TerminalNode NUMBER() { return getToken(PredicateParser.NUMBER, 0); }
 		public NumberContext number() {
 			return getRuleContext(NumberContext.class,0);
 		}
@@ -481,11 +430,6 @@ public class PredicateParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitEqualCondition(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitEqualCondition(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -505,7 +449,7 @@ public class PredicateParser extends Parser {
 				setState(34);
 				match(T__2);
 				setState(35);
-				match(NUMBER);
+				number();
 				}
 				break;
 			case 2:
@@ -643,11 +587,6 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitId(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitId(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final IdContext id() throws RecognitionException {
@@ -685,11 +624,6 @@ public class PredicateParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof PredicateListener ) ((PredicateListener)listener).exitNumber(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PredicateVisitor ) return ((PredicateVisitor<? extends T>)visitor).visitNumber(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final NumberContext number() throws RecognitionException {
@@ -723,9 +657,9 @@ public class PredicateParser extends Parser {
 	private boolean formula_sempred(FormulaContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 3);
+			return precpred(_ctx, 4);
 		case 1:
-			return precpred(_ctx, 2);
+			return precpred(_ctx, 3);
 		}
 		return true;
 	}
@@ -739,11 +673,11 @@ public class PredicateParser extends Parser {
 		"\3\4\3\4\5\4L\n\4\3\5\3\5\3\6\3\6\3\6\2\3\4\7\2\4\6\b\n\2\2\2Y\2\f\3\2"+
 		"\2\2\4\26\3\2\2\2\6K\3\2\2\2\bM\3\2\2\2\nO\3\2\2\2\f\r\5\4\3\2\r\3\3\2"+
 		"\2\2\16\17\b\3\1\2\17\20\7\3\2\2\20\21\5\4\3\2\21\22\7\4\2\2\22\27\3\2"+
-		"\2\2\23\27\5\6\4\2\24\25\7\f\2\2\25\27\5\4\3\3\26\16\3\2\2\2\26\23\3\2"+
-		"\2\2\26\24\3\2\2\2\27 \3\2\2\2\30\31\f\5\2\2\31\32\7\13\2\2\32\37\5\4"+
-		"\3\6\33\34\f\4\2\2\34\35\7\n\2\2\35\37\5\4\3\5\36\30\3\2\2\2\36\33\3\2"+
+		"\2\2\23\24\7\f\2\2\24\27\5\4\3\4\25\27\5\6\4\2\26\16\3\2\2\2\26\23\3\2"+
+		"\2\2\26\25\3\2\2\2\27 \3\2\2\2\30\31\f\6\2\2\31\32\7\13\2\2\32\37\5\4"+
+		"\3\7\33\34\f\5\2\2\34\35\7\n\2\2\35\37\5\4\3\6\36\30\3\2\2\2\36\33\3\2"+
 		"\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!\5\3\2\2\2\" \3\2\2\2#$\5\b\5"+
-		"\2$%\7\5\2\2%&\7\16\2\2&L\3\2\2\2\'(\5\b\5\2()\7\6\2\2)*\5\n\6\2*L\3\2"+
+		"\2$%\7\5\2\2%&\5\n\6\2&L\3\2\2\2\'(\5\b\5\2()\7\6\2\2)*\5\n\6\2*L\3\2"+
 		"\2\2+,\5\b\5\2,-\7\7\2\2-.\5\n\6\2.L\3\2\2\2/\60\5\b\5\2\60\61\7\b\2\2"+
 		"\61\62\5\n\6\2\62L\3\2\2\2\63\64\5\b\5\2\64\65\7\t\2\2\65\66\5\n\6\2\66"+
 		"L\3\2\2\2\678\5\n\6\289\7\5\2\29:\5\b\5\2:L\3\2\2\2;<\5\n\6\2<=\7\6\2"+

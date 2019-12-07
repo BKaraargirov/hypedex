@@ -18,7 +18,8 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
         medianValue = 5.0,
         left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
         right = KDNode("t1",3.0, EmptyNode(), EmptyNode()),
-      )
+      ),
+      "./test"
     )
 
     val storageLocation: String = metadataStore.saveMetadata(newMetadata)
@@ -36,7 +37,8 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
         medianValue = 5.0,
         left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
         right = KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
-      )
+      ),
+      "./test"
     )
 
     val storageLocation: String = metadataStore.saveMetadata(newMetadata)
@@ -64,7 +66,8 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
         medianValue = 5.0,
         left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
         right = KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
-      )
+      ),
+      "./test"
     )
 
     val storageLocation: String = metadataStore.saveMetadata(newMetadata)

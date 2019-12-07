@@ -8,7 +8,7 @@ import hypedex.queryAnalyzer.models.{AndNode, BooleanNode, Equals, GreaterThan, 
   */
 case class DimensionPredicate(
    dimensionName: String,
-   private val conditions: BooleanNode
+   private val conditions: LogicalTreeNode
 ) {
   val upperBound: Double = LogicalEngine.findUpperBound(conditions)
   val lowerBound: Double = LogicalEngine.findLowerBound(conditions)

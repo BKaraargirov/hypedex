@@ -7,10 +7,11 @@ import org.antlr.v4.runtime.tree.{ParseTree, ParseTreeWalker}
 
 class QueryAnalysisService[T <: HypedexPayload](
   private val syntaxTreeFactory: SyntaxTreeFactory,
-  private val predicateFactory: PredicateFactory,
   private val sqlParser: SqlParser,
   private val idExtractor: IdExtractor) {
-  def findSubset(root: TreeNode, filters: Map[String, DimensionPredicate]): List[PartitionNode[T]] = {
+  def findSubset(root: TreeNode, filters: PartitionPredicate): List[PartitionNode[T]] = {
+    def dimensionPredicates = toDimensionPredicate(filters)
+
     def loop(node: TreeNode): List[PartitionNode[T]] = {
       if(root.isInstanceOf[PartitionNode[T]]) {
         return List(root.asInstanceOf[PartitionNode[T]])
@@ -18,11 +19,11 @@ class QueryAnalysisService[T <: HypedexPayload](
 
       val node = root.asInstanceOf[KDNode]
 
-      if(filters.contains(node.dimensionName) == false) {
+      if(filters.mapping.contains(node.dimensionName) == false) {
         findSubset(node.left, filters) ++ findSubset(node.right, filters)
       }
 
-      val f = filters(node.dimensionName)
+      val f = dimensionPredicates(node.dimensionName)
 
       // TODO: Need to support OR clauses
       // TODO: Is the second range needed
@@ -40,17 +41,25 @@ class QueryAnalysisService[T <: HypedexPayload](
     loop(root)
   }
 
+  def toDimensionPredicate(partitionPredicate: PartitionPredicate): Map[String, DimensionPredicate] = {
+    partitionPredicate.mapping
+      .map {
+      case (dimName, treeNode) => (dimName, DimensionPredicate(dimName, treeNode))
+    }
+  }
+
   def getPartitionPredicate(query: String): PartitionPredicate = {
     val whereClause = this.sqlParser.extractWhereClause(query)
     val logicalSyntaxTree = syntaxTreeFactory.createAST(whereClause)
     val predicateIds = getIds(logicalSyntaxTree)
     val basePredicates = splitQueryCondition(logicalSyntaxTree, predicateIds)
-    predicateFactory.createPredicate(basePredicates)
+    new PartitionPredicate(basePredicates)
   }
 
   def splitQueryCondition(tree: ParseTree, ids: Set[String]): QueryDestructor.Mapping = {
-    val querySplitter = new QueryDestructor(ids)
-    querySplitter.visit(tree)
+    val queryDestructorListener = new QueryDestructor(ids)
+    ParseTreeWalker.DEFAULT.walk(queryDestructorListener, tree)
+    queryDestructorListener.getPredicates()
   }
 
   def getIds(tree: ParseTree): Set[String] = {

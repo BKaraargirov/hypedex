@@ -10,15 +10,17 @@ package hypedex.antlr;
 
 prog: formula;
 
+
 formula
 : '(' formula ')'         #Paranthesis
-| condition               #SingleFormula
 | formula AND formula   #AndConnection
 | formula OR formula    #OrConnection
 | NOT formula             #Negation
+| condition             #ConditionNode
 ;
 
-condition: id '=' NUMBER #EqualCondition
+
+condition: id '=' number #EqualCondition
     | id '<' number #LessThanCondition
     | id '>' number #GreaterThanCondition
     | id '<=' number #LessThanEqualCondition
@@ -30,13 +32,15 @@ condition: id '=' NUMBER #EqualCondition
     | number '>=' id #LessThanEqualCondition
     ;
 
+
+
 id:ID;
 number:NUMBER;
 
 OR: 'OR';
 AND: 'AND';
 NOT:'!';
-ID:[a-zA-Z][a-zA-Z0-9]*?;// match identifiers
+ID:([a-zA-Z]+)([a-zA-Z0-9]*);// match identifiers
 NUMBER:'-'?('0' .. '9')+ ('.' ('0' .. '9') +)?; // match a number
 NEWLINE:'\r'? '\n' -> skip ;     // return newlines to parser (end-statement signal)
 WS:[\t]+ -> skip ; // toss out whitespace

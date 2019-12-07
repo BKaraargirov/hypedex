@@ -39,13 +39,7 @@ public interface PredicateVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitParanthesis(PredicateParser.ParanthesisContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code SingleFormula}
-	 * labeled alternative in {@link PredicateParser#formula}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSingleFormula(PredicateParser.SingleFormulaContext ctx);
+
 	/**
 	 * Visit a parse tree produced by the {@code OrConnection}
 	 * labeled alternative in {@link PredicateParser#formula}.

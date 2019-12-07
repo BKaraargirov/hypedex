@@ -66,13 +66,13 @@ public class PredicateBaseListener implements PredicateListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSingleFormula(PredicateParser.SingleFormulaContext ctx) { }
+	@Override public void enterConditionNode(PredicateParser.ConditionNodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSingleFormula(PredicateParser.SingleFormulaContext ctx) { }
+	@Override public void exitConditionNode(PredicateParser.ConditionNodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

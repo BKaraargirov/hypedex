@@ -28,7 +28,7 @@ class KDTreeBuilder[T <: HypedexPayload](
     */
   def buildTree(data: Dataset[T], depth: Int): TreeNode = {
     def loop(data: Dataset[T], currentDepth: Int, boundary: Map[String, PartitionBoundary]): TreeNode = {
-      if (currentDepth > depth) {
+      if (currentDepth >= depth) {
         PartitionNode(UUID.randomUUID().toString, boundary, Option(data))
       }
       else {
