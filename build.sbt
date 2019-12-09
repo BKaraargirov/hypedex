@@ -1,15 +1,65 @@
-name := "hypedex"
+lazy val global = project
+  .in(file("."))
+  .aggregate(
+    hypedex,
+    airquality
+  )
 
-version := "0.1"
+lazy val hypedex = project
+  .settings(
+    settings,
+    assemblySettings,
+    libraryDependencies ++= Seq(
+      dependencies.spark % "provided",
+      dependencies.antlr,
+      dependencies.jsqlparser,
 
-scalaVersion := "2.12.8"
+      // Test depts
+      dependencies.scalactic,
+      dependencies.scalatest,
+    )
+  )
 
-libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-sql" % "2.4.3",
-  "org.antlr" % "antlr4-runtime" % "4.7.2", 
-  "org.scalactic" %% "scalactic" % "3.0.5",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-  "com.github.jsqlparser" % "jsqlparser" % "3.0"
+lazy val airquality = project
+  .settings(
+    settings,
+    assemblySettings,
+    libraryDependencies ++= Seq(
+      dependencies.spark
+    )
+  ).dependsOn(hypedex)
+
+lazy val assemblySettings = Seq(
+  assemblyJarName in assembly := name.value + ".jar",
+  assemblyMergeStrategy in assembly := {
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case _                             => MergeStrategy.first
+  }
 )
 
-testOptions in Test += Tests.Argument("-oD")
+lazy val dependencies =
+  new {
+    val spark = "org.apache.spark" %% "spark-sql" % "2.4.4"
+    val antlr = "org.antlr" % "antlr4-runtime" % "4.7.2"
+    val scalactic = "org.scalactic" %% "scalactic" % "3.1.0"
+    val scalatest = "org.scalatest" %% "scalatest" % "3.1.0" % "test"
+    val jsqlparser = "com.github.jsqlparser" % "jsqlparser" % "3.0"
+  }
+
+lazy val settings = Seq(
+  scalacOptions ++=  Seq(
+    "-unchecked",
+    "-feature",
+    "-language:existentials",
+    "-language:higherKinds",
+    "-language:implicitConversions",
+    "-language:postfixOps",
+    "-deprecation",
+    "-encoding",
+    "utf8"
+  ),
+
+  testOptions in Test += Tests.Argument("-oD")
+)
+
+
