@@ -4,12 +4,13 @@ import java.util.UUID
 
 import hypedex.models.{CalculationWrapper, KDNode, Metadata, PartitionNode, TreeNode}
 import hypedex.models.payloads.HypedexPayload
+import hypedex.partitionConstructor.{CalculationWrapper, KDNode, PartitionNode}
 import hypedex.storage.{PartitionStore, TMetadataStore}
 import org.apache.spark.sql.{DataFrame, Dataset, Encoder, Row, SparkSession}
 
 import scala.collection.mutable
 
-class DataManipulationService[T <: HypedexPayload](
+class DataCommandService[T <: HypedexPayload](
   session: SparkSession,
   partitionRepository: PartitionStore[T],
   metadataStore: TMetadataStore[Metadata],
@@ -50,31 +51,4 @@ class DataManipulationService[T <: HypedexPayload](
     }
   }
 
-  def loadParquets(targetNodes: List[PartitionNode[T]],
-                   baseDir: String, mapper: Row => T = this.mapper)(implicit enc: Encoder[T]): Dataset[T] = {
-    session.sqlContext
-      .read
-      .parquet(targetNodes.map(node => s"${baseDir}/${node.id}"):_*)
-      .map(mapper)
-  }
-
-  def loadParquets(targetNodes: List[PartitionNode[T]], baseDir: String, sql: String, tableName: String ): DataFrame  = {
-    val df = session.sqlContext
-      .read
-      .parquet(targetNodes.map(node => s"${baseDir}/${node.id}"):_*)
-
-    df.createTempView(tableName)
-    session.sql(sql)
-  }
-
-  def loadParquets(targetNodes: List[PartitionNode[T]], baseDir: String,
-                   sql: String, tableName: String, mapper: Row => T )(implicit enc: Encoder[T]): Dataset[T]  = {
-    val df = session.sqlContext
-      .read
-      .parquet(targetNodes.map(node => s"${baseDir}/${node.id}"):_*)
-
-    df.createTempView(tableName)
-
-    session.sql(sql).map(mapper)
-  }
 }

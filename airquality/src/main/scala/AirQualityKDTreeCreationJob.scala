@@ -1,5 +1,5 @@
 import hypedex.models.Metadata
-import hypedex.services.{DataManipulationService, KDTreeBuilder}
+import hypedex.services.{DataCommandService, KDTreeBuilder}
 import hypedex.storage.{BasicMetadataStore, ParquetPartitionStore}
 import hypedex.testUtils.{AirQuality}
 import org.apache.spark.sql.SparkSession
@@ -25,11 +25,11 @@ object AirQualityKDTreeCreationJob {
     val partitionStore = ParquetPartitionStore[AirQuality](spark)
     val metadataStore = new BasicMetadataStore[Metadata](metadataDir)
 
-    val depth = 5t
+    val depth = 5
 
     val dimensArray = Array("P1", "P2")
     val treeBuilder = new KDTreeBuilder[AirQuality](spark.sqlContext, dimensArray, 0.10)
-    val dataManipulationService = new DataManipulationService[AirQuality](spark, partitionStore,
+    val dataManipulationService = new DataCommandService[AirQuality](spark, partitionStore,
       metadataStore, treeBuilder, AirQuality.namedMappingFunction)
 
     dataManipulationService.createPartitions(

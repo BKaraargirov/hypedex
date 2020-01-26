@@ -1,6 +1,6 @@
-package hypedex.models
+package hypedex.partitionConstructor
 
-import hypedex.queryAnalyzer.models.{Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression}
+import hypedex.queryAnalyzer.models._
 
 @SerialVersionUID(-3638122912543770513L)
 case class PartitionBoundary (

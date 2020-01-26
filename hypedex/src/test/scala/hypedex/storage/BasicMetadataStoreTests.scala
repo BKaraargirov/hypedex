@@ -6,6 +6,8 @@ import hypedex.models.{EmptyNode, KDNode, Metadata}
 import org.scalatest.{FlatSpec, Matchers}
 import java.nio.file.{Files, Paths}
 
+import hypedex.partitionConstructor
+import hypedex.partitionConstructor.{EmptyNode, KDNode}
 import org.apache.commons.io.FileUtils
 
 
@@ -18,12 +20,12 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
     val newMetadata = Metadata(
       id = "TestNode",
       distanceFunction = (x: Double, y: Double) => {x + y},
-      treeRoot = KDNode(
+      treeRoot = partitionConstructor.KDNode(
         dimensionName = "bla",
         medianValue = 5.0,
-        left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
-        right = KDNode("t1",3.0, EmptyNode(), EmptyNode()),
-      ),
+        left = partitionConstructor.KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
+        right = partitionConstructor.KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
+        ),
       "./test"
     )
 
@@ -42,9 +44,9 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       treeRoot = KDNode(
         dimensionName = "bla",
         medianValue = 5.0,
-        left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
-        right = KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
-      ),
+        left = partitionConstructor.KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
+        right = partitionConstructor.KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
+        ),
       "./test"
     )
 
@@ -71,12 +73,12 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
     val newMetadata = Metadata(
       id = "TestNodeRead",
       distanceFunction = (x: Double, y: Double) => {x + y},
-      treeRoot = KDNode(
+      treeRoot = partitionConstructor.KDNode(
         dimensionName = "bla",
         medianValue = 5.0,
-        left = KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
-        right = KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
-      ),
+        left = partitionConstructor.KDNode("t1", 4.0, EmptyNode(), EmptyNode()),
+        right = partitionConstructor.KDNode("t1", 3.0, EmptyNode(), EmptyNode()),
+        ),
       "./test"
     )
 

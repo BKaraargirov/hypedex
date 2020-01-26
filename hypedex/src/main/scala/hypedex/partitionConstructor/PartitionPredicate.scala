@@ -1,6 +1,6 @@
-package hypedex.models
+package hypedex.partitionConstructor
 
-import hypedex.queryAnalyzer.models.{BooleanNode, LogicalTreeNode}
+import hypedex.queryAnalyzer.models.LogicalTreeNode
 
 class PartitionPredicate(
   val mapping: Map[String, LogicalTreeNode]

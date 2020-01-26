@@ -2,7 +2,7 @@ package hypedex
 
 import hypedex.models.Metadata
 import hypedex.queryAnalyzer.IdExtractor
-import hypedex.services.{DataManipulationService, KDTreeBuilder, QueryAnalysisService, SqlParser, SyntaxTreeFactory}
+import hypedex.services.{DataCommandService, KDTreeBuilder, QueryAnalysisService, SqlParser, SyntaxTreeFactory}
 import hypedex.storage.{BasicMetadataStore, ParquetPartitionStore}
 import hypedex.testUtils.{AirQuality, SparkContextHolder}
 import org.scalatest.refspec.RefSpec
@@ -19,7 +19,7 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
   val metadataStore = new BasicMetadataStore[Metadata](metadataDir)
   val partitionRepository = new ParquetPartitionStore[AirQuality](session)
   val kdTreeBuilder = new KDTreeBuilder[AirQuality](session.sqlContext, Array("P1", "P2")) //TODO: do not ask for dimensions here
-  val dms = new DataManipulationService[AirQuality](session, partitionRepository,
+  val dms = new DataCommandService[AirQuality](session, partitionRepository,
     metadataStore, kdTreeBuilder, AirQuality.mappingFunction)
   val queryAnalysisService = new QueryAnalysisService[AirQuality](new SyntaxTreeFactory,
     new SqlParser(), new IdExtractor())

@@ -1,7 +1,7 @@
 //package hypedex.services
 //
 //import hypedex.Hypedex
-//import hypedex.models.DimensionPredicate
+//import hypedex.partitionConstructor.DimensionPredicate
 //import hypedex.models.payloads.OneDimensionalPayload
 //import hypedex.queryAnalyzer.IdExtractor
 //import hypedex.queryAnalyzer.models.{AndNode, GreaterThan, LessThan}

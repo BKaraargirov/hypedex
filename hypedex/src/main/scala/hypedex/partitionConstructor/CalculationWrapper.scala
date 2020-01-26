@@ -1,4 +1,4 @@
-package hypedex.models
+package hypedex.partitionConstructor
 
 /**
   * The class is used so the stat.approximateQuantile can know where the value is.

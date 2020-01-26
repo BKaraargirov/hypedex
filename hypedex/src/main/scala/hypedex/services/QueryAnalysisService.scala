@@ -2,6 +2,8 @@ package hypedex.services
 
 import hypedex.models.payloads.HypedexPayload
 import hypedex.models.{DimensionPredicate, KDNode, PartitionNode, PartitionPredicate, TreeNode}
+import hypedex.partitionConstructor
+import hypedex.partitionConstructor.{DimensionPredicate, KDNode, PartitionNode, PartitionPredicate}
 import hypedex.queryAnalyzer.{IdExtractor, QueryDestructor}
 import org.antlr.v4.runtime.tree.{ParseTree, ParseTreeWalker}
 
@@ -44,7 +46,7 @@ class QueryAnalysisService[T <: HypedexPayload](
   def toDimensionPredicate(partitionPredicate: PartitionPredicate): Map[String, DimensionPredicate] = {
     partitionPredicate.mapping
       .map {
-      case (dimName, treeNode) => (dimName, DimensionPredicate(dimName, treeNode))
+      case (dimName, treeNode) => (dimName, partitionConstructor.DimensionPredicate(dimName, treeNode))
     }
   }
 

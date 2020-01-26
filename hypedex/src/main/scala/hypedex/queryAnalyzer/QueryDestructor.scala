@@ -2,7 +2,7 @@ package hypedex.queryAnalyzer
 
 import hypedex.antlr.PredicateParser.NumberContext
 import hypedex.antlr.{PredicateBaseListener, PredicateBaseVisitor, PredicateParser}
-import hypedex.models.DimensionPredicate
+import hypedex.partitionConstructor.DimensionPredicate
 import hypedex.queryAnalyzer.QueryDestructor.Mapping
 import hypedex.queryAnalyzer.models.{AndNode, Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression, LogicalTreeNode, OrNode}
 

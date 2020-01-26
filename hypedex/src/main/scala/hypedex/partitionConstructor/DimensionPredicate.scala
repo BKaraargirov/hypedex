@@ -1,7 +1,7 @@
-package hypedex.models
+package hypedex.partitionConstructor
 
 import hypedex.queryAnalyzer.LogicalEngine
-import hypedex.queryAnalyzer.models.{AndNode, BooleanNode, Equals, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, LogicalExpression, LogicalTreeNode, OrNode}
+import hypedex.queryAnalyzer.models.{AndNode, LogicalExpression, LogicalTreeNode, OrNode}
 
 /**
   * Contains the acceptable values

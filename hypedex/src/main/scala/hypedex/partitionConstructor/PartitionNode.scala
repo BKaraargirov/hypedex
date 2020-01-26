@@ -1,5 +1,6 @@
-package hypedex.models
+package hypedex.partitionConstructor
 
+import hypedex.models.TreeNode
 import hypedex.models.payloads.HypedexPayload
 import org.apache.spark.sql.Dataset
 

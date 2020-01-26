@@ -1,7 +1,7 @@
 package hypedex
 
 import hypedex.models.payloads.HypedexPayload
-import hypedex.models.{DimensionPredicate, KDNode, Metadata, PartitionNode, TreeNode}
+import hypedex.models.{Metadata, TreeNode}
 import hypedex.storage.TMetadataStore
 import org.apache.spark.sql.{DataFrame, Dataset, SQLContext}
 

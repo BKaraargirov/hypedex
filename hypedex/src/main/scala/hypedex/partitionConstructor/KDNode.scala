@@ -1,4 +1,6 @@
-package hypedex.models
+package hypedex.partitionConstructor
+
+import hypedex.models.TreeNode
 
 /**
   *

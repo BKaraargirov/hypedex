@@ -1,3 +1,5 @@
+scalaVersion := "2.12.10"
+
 lazy val global = project
   .in(file("."))
   .aggregate(

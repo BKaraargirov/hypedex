@@ -21,4 +21,6 @@ project/plugins/project/
 *.hype
 testResults/
 
-.DS_store
+.DS_store\
+.bloop/
+.metals/
