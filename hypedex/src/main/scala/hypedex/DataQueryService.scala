@@ -1,10 +1,11 @@
-package hypedex.services
+package hypedex
 
-import hypedex.models.{Metadata, PartitionNode}
+import hypedex.models.Metadata
 import hypedex.models.payloads.HypedexPayload
 import hypedex.partitionConstructor.PartitionNode
+import hypedex.services.QueryAnalysisService
 import hypedex.storage.{PartitionStore, TMetadataStore}
-import org.apache.spark.sql.{DataFrame, Dataset, Encoder, Row, SparkSession}
+import org.apache.spark.sql._
 
 class DataQueryService [T <: HypedexPayload](
   session: SparkSession,
@@ -15,7 +16,7 @@ class DataQueryService [T <: HypedexPayload](
 
   //TODO: remove table name
     def executeQuery(query: String, metadataId: String, dir: String, tableName: String, mapper: Row => T): Dataset[T] = {
-      import session.sqlContext.implicits._
+      import session.implicits._
 
       val metadata = metadataStore.getMetadataById(metadataId)
       val predicates = queryAnalysisService.getPartitionPredicate(query)

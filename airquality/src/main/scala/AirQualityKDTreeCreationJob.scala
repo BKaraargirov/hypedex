@@ -1,7 +1,8 @@
+import hypedex.DataCommandService
 import hypedex.models.Metadata
-import hypedex.services.{DataCommandService, KDTreeBuilder}
+import hypedex.services.KDTreeBuilder
 import hypedex.storage.{BasicMetadataStore, ParquetPartitionStore}
-import hypedex.testUtils.{AirQuality}
+import hypedex.testUtils.AirQuality
 import org.apache.spark.sql.SparkSession
 
 object AirQualityKDTreeCreationJob {

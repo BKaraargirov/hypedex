@@ -1,12 +1,13 @@
-package hypedex.services
+package hypedex
 
 import java.util.UUID
 
-import hypedex.models.{CalculationWrapper, KDNode, Metadata, PartitionNode, TreeNode}
 import hypedex.models.payloads.HypedexPayload
+import hypedex.models.{Metadata, TreeNode}
 import hypedex.partitionConstructor.{CalculationWrapper, KDNode, PartitionNode}
+import hypedex.services.KDTreeBuilder
 import hypedex.storage.{PartitionStore, TMetadataStore}
-import org.apache.spark.sql.{DataFrame, Dataset, Encoder, Row, SparkSession}
+import org.apache.spark.sql.{Encoder, Row, SparkSession}
 
 import scala.collection.mutable
 

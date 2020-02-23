@@ -2,7 +2,7 @@ package hypedex
 
 import hypedex.models.Metadata
 import hypedex.queryAnalyzer.IdExtractor
-import hypedex.services.{DataCommandService, KDTreeBuilder, QueryAnalysisService, SqlParser, SyntaxTreeFactory}
+import hypedex.services.{KDTreeBuilder, QueryAnalysisService, SqlParser, SyntaxTreeFactory}
 import hypedex.storage.{BasicMetadataStore, ParquetPartitionStore}
 import hypedex.testUtils.{AirQuality, SparkContextHolder}
 import org.scalatest.refspec.RefSpec
