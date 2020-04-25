@@ -1,6 +1,5 @@
 package hypedex.services
 
-import hypedex.models.{KDNode, PartitionNode}
 import hypedex.models.payloads.OneDimensionalPayload
 import hypedex.partitionConstructor.{KDNode, PartitionNode}
 import hypedex.testUtils.{DataLoader, SparkContextHolder}

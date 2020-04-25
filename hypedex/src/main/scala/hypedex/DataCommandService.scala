@@ -6,7 +6,7 @@ import hypedex.models.payloads.HypedexPayload
 import hypedex.models.{Metadata, TreeNode}
 import hypedex.partitionConstructor.{CalculationWrapper, KDNode, PartitionNode}
 import hypedex.services.KDTreeBuilder
-import hypedex.storage.{PartitionStore, TMetadataStore}
+import hypedex.storage.{PartitionStore, MetadataRepository}
 import org.apache.spark.sql.{Encoder, Row, SparkSession}
 
 import scala.collection.mutable
@@ -14,7 +14,7 @@ import scala.collection.mutable
 class DataCommandService[T <: HypedexPayload](
   session: SparkSession,
   partitionRepository: PartitionStore[T],
-  metadataStore: TMetadataStore[Metadata],
+  metadataStore: MetadataRepository[Metadata],
   kdTreeBuilder: KDTreeBuilder[T],
   mapper: Row => T
 ) {
@@ -34,7 +34,7 @@ class DataCommandService[T <: HypedexPayload](
     persistParquets(kdTree, targetDataDir)
     ds.unpersist()
     val metadata = Metadata(UUID.randomUUID().toString, distanceFunction, kdTree, targetDataDir)
-    this.metadataStore.saveMetadata(metadata)
+    this.metadataStore.save(metadata)
 
     metadata
   }

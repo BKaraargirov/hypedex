@@ -3,7 +3,7 @@ package hypedex.testUtils
 import hypedex.models.payloads.HypedexPayload
 import org.apache.spark.sql.Row
 
-case class AirQuality(
+case class ParticleAirQuality(
                        sensor_id: String,
                        location: String,
                        lat: String,
@@ -15,9 +15,9 @@ case class AirQuality(
   override def getDimensions() = Map("P1" -> this.P1, "P2" -> this.P2)
 }
 
-object AirQuality {
+object ParticleAirQuality {
   val mappingFunction = {
-    r: Row => AirQuality(
+    r: Row => ParticleAirQuality(
       r.getString(1),
       r.getString(2),
       r.getString(3),
@@ -36,7 +36,7 @@ object AirQuality {
     ) }
 
   val namedMappingFunction = {
-    r: Row => AirQuality(
+    r: Row => ParticleAirQuality(
       r.getAs[String]("sensor_id"),
       r.getAs[String]("location"),
       r.getAs[String]("lat"),

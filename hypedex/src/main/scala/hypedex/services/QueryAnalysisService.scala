@@ -1,7 +1,7 @@
 package hypedex.services
 
 import hypedex.models.payloads.HypedexPayload
-import hypedex.models.{DimensionPredicate, KDNode, PartitionNode, PartitionPredicate, TreeNode}
+import hypedex.models.TreeNode
 import hypedex.partitionConstructor
 import hypedex.partitionConstructor.{DimensionPredicate, KDNode, PartitionNode, PartitionPredicate}
 import hypedex.queryAnalyzer.{IdExtractor, QueryDestructor}
@@ -22,7 +22,7 @@ class QueryAnalysisService[T <: HypedexPayload](
       val node = root.asInstanceOf[KDNode]
 
       if(filters.mapping.contains(node.dimensionName) == false) {
-        findSubset(node.left, filters) ++ findSubset(node.right, filters)
+        loop(node.left) ++ loop(node.right)
       }
 
       val f = dimensionPredicates(node.dimensionName)
@@ -30,11 +30,11 @@ class QueryAnalysisService[T <: HypedexPayload](
       // TODO: Need to support OR clauses
       // TODO: Is the second range needed
       val r = if(f.upperBound >= node.medianValue || f.isWithinRange(node.medianValue))
-        findSubset(node.right, filters)
+        loop(node.right)
       else List()
 
       val l = if(f.lowerBound < node.medianValue)
-        findSubset(node.left, filters)
+        loop(node.left)
       else List()
 
       r ++ l

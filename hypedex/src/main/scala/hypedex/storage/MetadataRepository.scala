@@ -7,8 +7,8 @@ import hypedex.models.payloads.HypedexPayload
   * Responsible for storing and retrieving the metadata
   * @tparam T Metadata or its subclass
   */
-trait TMetadataStore[T <: Metadata] {
-  def saveMetadata(newMetadata: T): String
+trait MetadataRepository[T <: Metadata] {
+  def save(newMetadata: T): String
   def getMetadataById(id: String): T
   def deleteMetadataById(id: String): Boolean
 }

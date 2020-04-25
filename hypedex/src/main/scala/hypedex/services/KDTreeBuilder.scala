@@ -2,11 +2,11 @@ package hypedex.services
 
 import java.util.UUID
 
-import hypedex.models.{KDNode, Metadata, PartitionBoundary, PartitionNode, TreeNode}
+import hypedex.models.TreeNode
 import hypedex.models.payloads.HypedexPayload
 import hypedex.partitionConstructor.{CalculationWrapper, KDNode, PartitionBoundary, PartitionNode}
 import hypedex.queryAnalyzer.models.{GreaterThanEqual, LessThan}
-import hypedex.storage.{PartitionStore, TMetadataStore}
+import hypedex.storage.{PartitionStore, MetadataRepository}
 import org.apache.spark.sql.{Dataset, Encoder, SQLContext}
 
 /**

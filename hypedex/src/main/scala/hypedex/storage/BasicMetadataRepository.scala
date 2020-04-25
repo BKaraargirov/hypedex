@@ -11,7 +11,7 @@ import org.apache.commons.io.FileUtils
   * @param storageLocation where the metadatas will be placed
   * @tparam T Metadata or its subclass
   */
-class BasicMetadataStore[T <: Metadata](val storageLocation: String) extends TMetadataStore[T] {
+class BasicMetadataRepository[T <: Metadata](val storageLocation: String) extends MetadataRepository[T] {
   val fileExtension = ".hype"
   //TODO: Create a folder where all metadatas will be stored
 
@@ -21,7 +21,7 @@ class BasicMetadataStore[T <: Metadata](val storageLocation: String) extends TMe
     * @return The storage location of the metadata file
     */
   // TODO: Use Either
-  override def saveMetadata(newMetadata: T): String = {
+  override def save(newMetadata: T): String = {
     val pathToFile = createPathToFile(newMetadata.id)
     val fileStream = new FileOutputStream(pathToFile)
     val objectStream = new ObjectOutputStream(fileStream)
@@ -80,7 +80,7 @@ class BasicMetadataStore[T <: Metadata](val storageLocation: String) extends TMe
   }
 }
 
-object BasicMetadataStore {
-  def apply[T <: Metadata](storageLocation: String): BasicMetadataStore[T] =
-    new BasicMetadataStore(storageLocation)
+object BasicMetadataRepository {
+  def apply[T <: Metadata](storageLocation: String): BasicMetadataRepository[T] =
+    new BasicMetadataRepository(storageLocation)
 }

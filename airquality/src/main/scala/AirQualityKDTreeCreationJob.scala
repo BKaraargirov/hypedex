@@ -1,7 +1,7 @@
 import hypedex.DataCommandService
 import hypedex.models.Metadata
 import hypedex.services.KDTreeBuilder
-import hypedex.storage.{BasicMetadataStore, ParquetPartitionStore}
+import hypedex.storage.{BasicMetadataRepository, ParquetPartitionStore}
 import hypedex.testUtils.AirQuality
 import org.apache.spark.sql.SparkSession
 
@@ -24,7 +24,7 @@ object AirQualityKDTreeCreationJob {
     val metadataDir = s"D:\\source\\datasets\\air-tests\\metadata-four-level"
 
     val partitionStore = ParquetPartitionStore[AirQuality](spark)
-    val metadataStore = new BasicMetadataStore[Metadata](metadataDir)
+    val metadataStore = new BasicMetadataRepository[Metadata](metadataDir)
 
     val depth = 5
 

@@ -2,10 +2,10 @@ package hypedex.storage
 
 import java.io.File
 
-import hypedex.models.{EmptyNode, KDNode, Metadata}
 import org.scalatest.{FlatSpec, Matchers}
 import java.nio.file.{Files, Paths}
 
+import hypedex.models.Metadata
 import hypedex.partitionConstructor
 import hypedex.partitionConstructor.{EmptyNode, KDNode}
 import org.apache.commons.io.FileUtils
@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils
 
 class BasicMetadataStoreTests extends FlatSpec with Matchers {
   val location = System.getProperty("user.dir") + "/testResults" // /Users/silver/source/Hypedex/testResults"
-  val metadataStore: BasicMetadataStore[Metadata] = BasicMetadataStore(location)
+  val metadataStore: BasicMetadataRepository[Metadata] = BasicMetadataRepository(location)
 
 
   "Files" should "have been created" in {
@@ -29,7 +29,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       "./test"
     )
 
-    val storageLocation: String = metadataStore.saveMetadata(newMetadata)
+    val storageLocation: String = metadataStore.save(newMetadata)
 
     val file = Paths.get(storageLocation).toFile
     file.exists() shouldEqual true
@@ -50,7 +50,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       "./test"
     )
 
-    val storageLocation: String = metadataStore.saveMetadata(newMetadata)
+    val storageLocation: String = metadataStore.save(newMetadata)
 
     val retrievedMetadata: Metadata = metadataStore.getMetadataById(newMetadata.id)
 
@@ -82,7 +82,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
       "./test"
     )
 
-    val storageLocation: String = metadataStore.saveMetadata(newMetadata)
+    val storageLocation: String = metadataStore.save(newMetadata)
 
     var file = Paths.get(storageLocation).toFile
     file.exists() shouldEqual true
@@ -95,7 +95,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
   "File location with trailing /" should "be correct" in {
     val baseLocation ="/usr/local/temp/"
     val metadataName = "test"
-    val testStore: BasicMetadataStore[Metadata] = BasicMetadataStore(baseLocation)
+    val testStore: BasicMetadataRepository[Metadata] = BasicMetadataRepository(baseLocation)
 
     val actual = testStore.createPathToFile(metadataName)
 
@@ -107,7 +107,7 @@ class BasicMetadataStoreTests extends FlatSpec with Matchers {
   "File location without trailing /" should "be correct" in {
     val baseLocation ="/usr/local/temp"
     val metadataName = "test"
-    val testStore: BasicMetadataStore[Metadata] = BasicMetadataStore(baseLocation)
+    val testStore: BasicMetadataRepository[Metadata] = BasicMetadataRepository(baseLocation)
 
     val actual = testStore.createPathToFile(metadataName)
 
