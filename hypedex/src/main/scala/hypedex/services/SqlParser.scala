@@ -11,6 +11,9 @@ class SqlParser {
 
     val whereClause = parsedQuery.asInstanceOf[PlainSelect].getWhere
 
-    whereClause.toString
+    if(whereClause == null)
+      ""
+    else
+      whereClause.toString
   }
 }

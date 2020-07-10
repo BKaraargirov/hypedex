@@ -10,8 +10,7 @@ object AirQualityKDTreeCreationJob {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-      .config("spark.master", "local")
-      .config("spark.executor.cores", 8)
+      .master("local[8]")
       .config("spark.driver.memory", "5g")
       .config("spark.executor.memory", "5g")
       .appName("Spark AirQuality")
@@ -24,7 +23,7 @@ object AirQualityKDTreeCreationJob {
     val metadataDir = s"D:\\source\\datasets\\air-tests\\metadata-four-level"
 
     val partitionStore = ParquetPartitionStore[AirQuality](spark)
-    val metadataStore = new BasicMetadataRepository[Metadata](metadataDir)
+    val metadataStore = new BasicMetadataRepository[AirQuality, Metadata[AirQuality]](metadataDir)
 
     val depth = 5
 

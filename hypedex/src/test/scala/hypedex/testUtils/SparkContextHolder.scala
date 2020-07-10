@@ -6,11 +6,11 @@ import org.apache.spark.sql.SparkSession
 object SparkContextHolder {
   val conf: SparkConf = new SparkConf()
     .setAppName("HypedexTests")
-    .setMaster("local")
+    .setMaster("local[12]")
       //.set("spark.sql.files.maxPartitionBytes", "20000000")
     .set("spark.driver.maxResultSize", "3g")
-    .set("spark.executor.memory", "5g")
-    .set("spark.driver.memory", "4g")
+    .set("spark.executor.memory", "10g")
+    .set("spark.driver.memory", "5g")
 
   val sparkContext = new SparkContext(conf)
 

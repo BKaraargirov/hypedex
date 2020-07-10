@@ -10,7 +10,7 @@ import org.apache.spark.sql._
 class DataQueryService [T <: HypedexPayload](
   session: SparkSession,
   partitionRepository: PartitionStore[T],
-  metadataStore: MetadataRepository[Metadata],
+  metadataStore: MetadataRepository[T, Metadata[T]],
   queryAnalysisService: QueryAnalysisService[T]
 ) {
 
@@ -30,6 +30,10 @@ class DataQueryService [T <: HypedexPayload](
     df.createTempView(tableName)
 
     session.sql(sql).map(mapper)
+  }
+
+  def findNearestNeighbourTo(referencePoint: T): T = {
+    ???
   }
 
 

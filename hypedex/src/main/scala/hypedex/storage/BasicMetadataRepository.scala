@@ -4,6 +4,7 @@ import java.io.{File, FileInputStream, FileOutputStream, ObjectInputStream, Obje
 import java.nio.file.{Files, Paths}
 
 import hypedex.models.Metadata
+import hypedex.models.payloads.HypedexPayload
 import org.apache.commons.io.FileUtils
 
 /**
@@ -11,7 +12,7 @@ import org.apache.commons.io.FileUtils
   * @param storageLocation where the metadatas will be placed
   * @tparam T Metadata or its subclass
   */
-class BasicMetadataRepository[T <: Metadata](val storageLocation: String) extends MetadataRepository[T] {
+class BasicMetadataRepository[T <: HypedexPayload, M <: Metadata[T]](val storageLocation: String) extends MetadataRepository[T, M] {
   val fileExtension = ".hype"
   //TODO: Create a folder where all metadatas will be stored
 
@@ -21,7 +22,7 @@ class BasicMetadataRepository[T <: Metadata](val storageLocation: String) extend
     * @return The storage location of the metadata file
     */
   // TODO: Use Either
-  override def save(newMetadata: T): String = {
+  override def save(newMetadata: M): String = {
     val pathToFile = createPathToFile(newMetadata.id)
     val fileStream = new FileOutputStream(pathToFile)
     val objectStream = new ObjectOutputStream(fileStream)
@@ -41,13 +42,13 @@ class BasicMetadataRepository[T <: Metadata](val storageLocation: String) extend
     * @param metadataId used to locate the file
     * @return the metadata.
     */
-  override def getMetadataById(metadataId: String): T = {
+  override def getMetadataById(metadataId: String): M = {
     val pathToFile = createPathToFile(metadataId)
     val fileReader = new FileInputStream(pathToFile)
     val objectStream = new ObjectInputStream(fileReader)
 
     try {
-      objectStream.readObject().asInstanceOf[T]
+      objectStream.readObject().asInstanceOf[M]
     } finally {
       objectStream.close()
       fileReader.close()
@@ -81,6 +82,6 @@ class BasicMetadataRepository[T <: Metadata](val storageLocation: String) extend
 }
 
 object BasicMetadataRepository {
-  def apply[T <: Metadata](storageLocation: String): BasicMetadataRepository[T] =
+  def apply[T <: HypedexPayload, M <: Metadata[T]](storageLocation: String): BasicMetadataRepository[T, M] =
     new BasicMetadataRepository(storageLocation)
 }

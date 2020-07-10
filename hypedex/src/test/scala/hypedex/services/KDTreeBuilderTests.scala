@@ -64,12 +64,12 @@ class KDTreeBuilderTests extends FlatSpec with Matchers {
 
     val root = treeBuilder.buildTree(dataset, 2)
 
-    val p1 = root.asInstanceOf[KDNode].left.asInstanceOf[KDNode].left.asInstanceOf[PartitionNode[OneDimensionalPayload]]
-    val p2 = root.asInstanceOf[KDNode].right.asInstanceOf[KDNode].right.asInstanceOf[PartitionNode[OneDimensionalPayload]]
+    val p1 = root.asInstanceOf[KDNode[OneDimensionalPayload]].left.asInstanceOf[KDNode[OneDimensionalPayload]].left.asInstanceOf[PartitionNode[OneDimensionalPayload]]
+    val p2 = root.asInstanceOf[KDNode[OneDimensionalPayload]].right.asInstanceOf[KDNode[OneDimensionalPayload]].right.asInstanceOf[PartitionNode[OneDimensionalPayload]]
 
-    val base = root.asInstanceOf[KDNode].medianValue
-    val l1 = root.asInstanceOf[KDNode].left.asInstanceOf[KDNode].medianValue
-    val r1 = root.asInstanceOf[KDNode].right.asInstanceOf[KDNode].medianValue
+    val base = root.asInstanceOf[KDNode[OneDimensionalPayload]].medianValue
+    val l1 = root.asInstanceOf[KDNode[OneDimensionalPayload]].left.asInstanceOf[KDNode[OneDimensionalPayload]].medianValue
+    val r1 = root.asInstanceOf[KDNode[OneDimensionalPayload]].right.asInstanceOf[KDNode[OneDimensionalPayload]].medianValue
 
 
     p1.isInstanceOf[PartitionNode[OneDimensionalPayload]] shouldEqual true

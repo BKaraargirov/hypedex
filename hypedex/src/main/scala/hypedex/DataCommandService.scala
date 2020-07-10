@@ -14,7 +14,7 @@ import scala.collection.mutable
 class DataCommandService[T <: HypedexPayload](
   session: SparkSession,
   partitionRepository: PartitionStore[T],
-  metadataStore: MetadataRepository[Metadata],
+  metadataStore: MetadataRepository[T, Metadata[T]],
   kdTreeBuilder: KDTreeBuilder[T],
   mapper: Row => T
 ) {
@@ -22,9 +22,9 @@ class DataCommandService[T <: HypedexPayload](
     originalDataDir: String,
     originalFilePattern: String,
     targetDataDir: String,
-    distanceFunction: (Double, Double) => Double,
+    distanceFunction: (T, T) => Double,
     depth: Int =  3
-  )(implicit enc: Encoder[T], calcWrapperEncoder: Encoder[CalculationWrapper]): Metadata = {
+  )(implicit enc: Encoder[T], calcWrapperEncoder: Encoder[CalculationWrapper]): Metadata[T] = {
     val ds = session.read.option("header", "true")
       .parquet(s"${originalDataDir}/${originalFilePattern}")
       .map(mapper)
@@ -47,7 +47,7 @@ class DataCommandService[T <: HypedexPayload](
 
       currentNode match {
         case partition: PartitionNode[T] => this.partitionRepository.save(partition, targetDir)
-        case node: KDNode => queue.enqueue(node.left, node.right)
+        case node: KDNode[T] => queue.enqueue(node.left, node.right)
       }
     }
   }

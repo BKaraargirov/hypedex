@@ -5,23 +5,26 @@ import hypedex.queryAnalyzer.IdExtractor
 import hypedex.services.{KDTreeBuilder, QueryAnalysisService, SqlParser, SyntaxTreeFactory}
 import hypedex.storage.{BasicMetadataRepository, ParquetPartitionStore}
 import hypedex.testUtils.{ParticleAirQuality, SparkContextHolder}
+import org.apache.spark.sql.Row
 import org.scalatest.refspec.RefSpec
 import org.scalatest.{FlatSpec, Ignore, Matchers}
 
 class HypedexPerformanceTests extends FlatSpec with Matchers {
   val session = SparkContextHolder.getSession()
-  val originalDataset = "D:\\source\\datasets\\sofia-air-quality-dataset\\*sds*.csv"
-  val bigParquetDataset = "D:\\source\\datasets\\air-tests\\all-parquet"
-  val baseDir = "D:\\source\\datasets\\air-tests\\kd-tree"
-  val metadataDir = "D:\\source\\datasets\\air-tests\\metadata-two"
-  val metadataId = "1a5d2fa5-d516-42f9-b874-5b7066e606e0"
-  val metadataStore = new BasicMetadataRepository[Metadata](metadataDir)
+  val datasetDir = "C:\\Source\\data-sets"
+  val originalDataset = s"$datasetDir\\sofia-air-quality\\*sds*.csv"
+  val bigParquetDataset = s"$datasetDir\\air-tests\\all-parquet"
+  val baseDir = s"$datasetDir\\air-tests\\kd-tree"
+  val metadataDir = s"$datasetDir\\air-tests\\metadata-two"
+  val metadataId = "cca582f2-68ef-4dac-9714-0145f329f2d9"
+  val metadataStore = new BasicMetadataRepository[ParticleAirQuality, Metadata[ParticleAirQuality]](metadataDir)
   val partitionRepository = new ParquetPartitionStore[ParticleAirQuality](session)
   val kdTreeBuilder = new KDTreeBuilder[ParticleAirQuality](session.sqlContext, Array("P1", "P2")) //TODO: do not ask for dimensions here
   val dms = new DataCommandService[ParticleAirQuality](session, partitionRepository,
-                                                       metadataStore, kdTreeBuilder, ParticleAirQuality.mappingFunction)
+                                                       metadataStore, kdTreeBuilder, ParticleAirQuality.namedMappingFunction)
   val queryAnalysisService = new QueryAnalysisService[ParticleAirQuality](new SyntaxTreeFactory,
                                                                           new SqlParser(), new IdExtractor())
+  val dqs = new DataQueryService[ParticleAirQuality](session, partitionRepository, metadataStore, queryAnalysisService);
 
 
   "create big parquet" should "work" in {
@@ -32,6 +35,18 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
       .map(ParticleAirQuality.mappingFunction)
 
     df.write.parquet(bigParquetDataset)
+  }
+
+  "create kd-tree" should "work" in {
+    import session.sqlContext.implicits._
+
+    dms.createPartitions(
+      bigParquetDataset,
+      originalFilePattern = "*",
+      targetDataDir = baseDir,
+      distanceFunction = null,
+      depth = 4
+    )
   }
 
   "Q1 on csv files" should "run" in {
@@ -49,7 +64,6 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
 
     val result = session
       .sql("SELECT * FROM airQuality WHERE P1 > 29.27 AND P2 < 11.5")
-      .map(ParticleAirQuality.mappingFunction)
 
     println(result.count())
   }
@@ -65,7 +79,6 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
     df.createTempView("airQuality")
 
     val result = session.sql("SELECT * FROM airQuality WHERE P1 > 20")
-      .map(ParticleAirQuality.mappingFunction)
 
     println(result.count())
   }
@@ -78,7 +91,7 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
 
     df.createTempView("airQuality")
 
-    val result = session.sql("SELECT *, MAX(P2), MIN(P1) FROM airQuality")
+    val result = session.sql("SELECT MAX(P2) AS MP2, MIN(P1) AS MP1 FROM airQuality")
 
     result.collect().foreach(println)
   }
@@ -99,6 +112,16 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
     println(result.count())
   }
 
+   "Q1 on kd-tree" should "be faster" in {
+      val query = "SELECT * FROM airQualityP WHERE P1 > 29.27 AND P2 < 11.5"
+
+      import session.sqlContext.implicits._
+
+      val result = dqs.executeQuery(query, metadataId, baseDir, "airQualityP", ParticleAirQuality.namedMappingFunction)
+
+      println(result.count())
+    }
+
   "Q2 on pure parquet files" should "run" in {
     import session.sqlContext.implicits._
 
@@ -113,6 +136,16 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
     println(result.count())
   }
 
+  "Q2 on kd-tree" should "be faster" in {
+    val query = "SELECT * FROM airQualityP WHERE P1 > 20"
+
+    import session.sqlContext.implicits._
+
+    val result = dqs.executeQuery(query, metadataId, baseDir, "airQualityP", ParticleAirQuality.namedMappingFunction)
+
+    println(result.count())
+  }
+
   "Q3 on pure parquet files" should "run" in {
     import session.sqlContext.implicits._
 
@@ -121,12 +154,33 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
     df.createTempView("airQualityP")
 
     val result = session
-      .sql("SELECT *, MAX(P2), MIN(P1) FROM airQualityP")
-      .map(ParticleAirQuality.namedMappingFunction)
+      .sql("SELECT MAX(P2) AS MP2, MIN(P1) AS MP1 FROM airQualityP")
+      .map(    (r: Row) => (
+        r.getAs[Double]("MP1"),
+        r.getAs[Double]("MP2")
+      ))
 
     println(result.count())
   }
 
+
+  "Q3 on kd-tree" should "be faster" in {
+    val query = "SELECT MAX(P2) AS MP2, MIN(P1) AS MP1 FROM airQualityP"
+
+    import session.sqlContext.implicits._
+
+    val result = dqs.executeQuery(query, metadataId, baseDir, "airQualityP", (r: Row) => ParticleAirQuality(
+      "",
+      "",
+      "",
+      "",
+      "",
+      r.getAs[Double]("MP1"),
+      r.getAs[Double]("MP2")
+    ))
+
+    println(result.count())
+  }
 
  "test speed of normal request" should "be slower" in {
     val df = session.read.option("header", "true").csv("/Users/silver/Documents/nbu/sofia-air-quality-dataset/*2019*sds*.csv")
@@ -139,23 +193,7 @@ class HypedexPerformanceTests extends FlatSpec with Matchers {
    println(result.count())
   }
 //
-//  "test speed of kd tree one" should "be faster" in {
-//    val query = "SELECT * FROM airQualityKD WHERE P1 > 29.27 AND P2 < 11.5"
-//
-//    import session.sqlContext.implicits._
-//
-//    val metadata = metadataStore.getMetadataById(metadataId)
-//    val predicates = queryAnalysisService.getPartitionPredicate(query)
-//    val nodes = queryAnalysisService.findSubset(metadata.treeRoot, predicates)
-//
-//    val dataset = dms.loadParquets(nodes, baseDir, ParticleAirQuality.namedMappingFunction)
-//
-//    dataset.createTempView("airQualityKD")
-//
-//    val result = session.sql(query)
-//
-//    println(result.count())
-//  }
+
 //
 //  "test speed of kd tree one without mapping" should "be faster" in {
 //    val query = "SELECT * FROM airQualityKD WHERE P1 > 29.27 AND P2 < 11.5"

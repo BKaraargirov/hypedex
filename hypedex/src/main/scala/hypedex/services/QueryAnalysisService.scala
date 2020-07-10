@@ -15,29 +15,33 @@ class QueryAnalysisService[T <: HypedexPayload](
     def dimensionPredicates = toDimensionPredicate(filters)
 
     def loop(node: TreeNode): List[PartitionNode[T]] = {
-      if(root.isInstanceOf[PartitionNode[T]]) {
-        return List(root.asInstanceOf[PartitionNode[T]])
+      if(node.isInstanceOf[PartitionNode[T]]) {
+        return List(node.asInstanceOf[PartitionNode[T]])
       }
 
-      val node = root.asInstanceOf[KDNode]
+      val mappedNode = node.asInstanceOf[KDNode[T]]
 
-      if(filters.mapping.contains(node.dimensionName) == false) {
-        loop(node.left) ++ loop(node.right)
+      if(filters.mapping.contains(mappedNode.dimensionName) == false) {
+        loop(mappedNode.left) ++ loop(mappedNode.right)
       }
 
-      val f = dimensionPredicates(node.dimensionName)
+      if(dimensionPredicates.contains(mappedNode.dimensionName) == false) {
+        loop(mappedNode.right) ++ loop(mappedNode.left)
+      } else {
+        val f = dimensionPredicates(mappedNode.dimensionName)
 
-      // TODO: Need to support OR clauses
-      // TODO: Is the second range needed
-      val r = if(f.upperBound >= node.medianValue || f.isWithinRange(node.medianValue))
-        loop(node.right)
-      else List()
+        // TODO: Need to support OR clauses
+        // TODO: Is the second range needed
+        val r = if (f.upperBound >= mappedNode.medianValue || f.isWithinRange(mappedNode.medianValue))
+          loop(mappedNode.right)
+        else List()
 
-      val l = if(f.lowerBound < node.medianValue)
-        loop(node.left)
-      else List()
+        val l = if (f.lowerBound < mappedNode.medianValue)
+          loop(mappedNode.left)
+        else List()
 
-      r ++ l
+        r ++ l
+      }
     }
 
     loop(root)

@@ -1,6 +1,7 @@
 package hypedex.partitionConstructor
 
 import hypedex.models.TreeNode
+import hypedex.models.payloads.HypedexPayload
 
 /**
   *
@@ -10,9 +11,11 @@ import hypedex.models.TreeNode
   * @param right All values that where bigger or equal to the median
   */
 @SerialVersionUID(951147233710169888L)
-case class KDNode(
+case class KDNode[T <: HypedexPayload](
   dimensionName: String,
   medianValue: Double,
+  medianPoint: T,
   left: TreeNode,
-  right: TreeNode
+  right: TreeNode,
+
 ) extends TreeNode

@@ -36,7 +36,7 @@ class KDTreeBuilder[T <: HypedexPayload](
       }
       else {
         val dimName = getTargetDimension(currentDepth, dimensionOrder)
-        val (left, right, splitPoint) = split(data, dimName)
+        val (left, right, splitPoint, point) = split(data, dimName)
 
         val leftBoundary= boundary + (dimName -> boundary(dimName).updateBoundary(LessThan(splitPoint)))
         val rightBoundary = boundary + (dimName -> boundary(dimName).updateBoundary(GreaterThanEqual(splitPoint)))
@@ -44,6 +44,7 @@ class KDTreeBuilder[T <: HypedexPayload](
         KDNode(
           dimensionName = dimName,
           medianValue = splitPoint,
+          medianPoint = point,
           left = loop(left, currentDepth + 1, leftBoundary),
           right = loop(right, currentDepth + 1, rightBoundary)
         )
@@ -62,7 +63,7 @@ class KDTreeBuilder[T <: HypedexPayload](
     * @return
     */
   def split(data: Dataset[T], dimensionName: String)
-           (implicit encoder: Encoder[CalculationWrapper]): (Dataset[T], Dataset[T], Double) = {
+           (implicit encoder: Encoder[CalculationWrapper]): (Dataset[T], Dataset[T], Double, T) = {
     val splitPoint = data
       .map(p => CalculationWrapper(p.getDimensions()(dimensionName)))
       .stat.approxQuantile(WRAPPER_PROPERTY, Array(0.5), splitErrorTolerance).head
@@ -72,7 +73,9 @@ class KDTreeBuilder[T <: HypedexPayload](
 
     val right = data.filter((p: HypedexPayload) => p.getDimensions()(dimensionName) >= splitPoint)
 
-    (left, right, splitPoint)
+    val mid = data.filter((p: HypedexPayload) => p.getDimensions()(dimensionName) == splitPoint)
+
+    (left, right, splitPoint, mid.first())
   }
 
   /**
